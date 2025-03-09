@@ -33,9 +33,6 @@ make run
 apt install\
  build-essential\
  make\
- cmake\
- zip\
- unzip\
  clangd-17\
  clang-format\
  libsdl2-ttf-dev\
@@ -62,7 +59,6 @@ Development on Windows is done through MSYS2
 ```
 pacman -S base-devel\
  gcc\
- cmake\
  mingw64/mingw-w64-x86_64-SDL2\
  mingw64/mingw-w64-x86_64-SDL2_image\
  mingw64/mingw-w64-x86_64-SDL2_mixer\
