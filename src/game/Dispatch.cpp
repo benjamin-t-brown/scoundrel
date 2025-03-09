@@ -1,0 +1,38 @@
+#include "Dispatch.h"
+#include "game/Dispatch.h"
+#include "game/state.h"
+#include "logger.h"
+
+namespace scoundrel {
+
+Dispatch Dispatch::singleton = Dispatch();
+
+Dispatch& Dispatch::get() { return Dispatch::singleton; }
+
+void Dispatch::init(State* state) {
+  if (state == nullptr) {
+    logger::error("Dispatch::init window is nullptr");
+    return;
+  }
+  Dispatch::singleton.state = state;
+}
+
+void Dispatch::addAction(std::unique_ptr<actions::AbstractAction> action) {
+  // logger::debug(("[ACTION] Adding action: " + action->getName()).c_str());
+  actions.push_back(std::move(action));
+}
+
+void Dispatch::update() {
+  if (!actions.empty()) {
+    // prevents infinite loop if an action adds another action
+    std::vector<std::unique_ptr<actions::AbstractAction>> actionsCopy;
+    actionsCopy.swap(actions);
+    for (auto& actionPtr : actionsCopy) {
+      auto& action = *actionPtr;
+      // logger::debug(("[ACTION] Invoking action: " + action.getName()).c_str());
+      action.execute(state);
+    }
+  }
+}
+
+} // namespace scoundrel

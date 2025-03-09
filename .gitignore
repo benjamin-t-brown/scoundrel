@@ -1,0 +1,12 @@
+SCOUNDREL
+SCOUNDREL.js
+SCOUNDREL.data
+dist/
+workspace/
+.build/
+.cache
+*.o
+*.d
+*.exe
+*.wasm
+compile_commands.json
