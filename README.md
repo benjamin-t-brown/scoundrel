@@ -30,7 +30,7 @@ make run
 ### Ubuntu
 
 ```
-	apt install build-essential make cmake zip unzip clangd-17 clang-format libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-gfx-dev -y
+apt install build-essential make cmake zip unzip clangd-17 clang-format libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-gfx-dev -y
 ```
 
 ### Mac M1^ (brew)
@@ -49,13 +49,13 @@ python3 -m pip install --upgrade pip
 Development on Windows is done through MSYS2
 
 ```
-	pacman -S base-devel gcc cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf
+pacman -S base-devel gcc cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf
 
 # additional development tools
-	pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-clang-tools-extra mingw64/mingw-w64-x86_64-include-what-you-use msys/python
+pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-clang-tools-extra mingw64/mingw-w64-x86_64-include-what-you-use msys/python
 
 # this linker is much faster on Windows
-  pacman -S mingw64/mingw-w64-x86_64-lld
+pacman -S mingw64/mingw-w64-x86_64-lld
 ```
 
 ### Build SDL From Scratch
@@ -63,15 +63,15 @@ Development on Windows is done through MSYS2
 If you'd prefer to build SDL, this might be helpful to you.
 
 ```
-	cd /tmp
-	git clone https://github.com/libsdl-org/SDL
-	cd SDL
-	git checkout SDL2
-	mkdir build
-	cd build
-	../configure
-	make
-	sudo make install
+cd /tmp
+git clone https://github.com/libsdl-org/SDL
+cd SDL
+git checkout SDL2
+mkdir build
+cd build
+../configure
+make
+sudo make install
 ```
 
 ### Clangd Setup
@@ -89,7 +89,7 @@ python3 -m pip install compiledb
 Then run
 
 ```
-  ./compile-commands.sh
+./compile-commands.sh
 ```
 
 ### MiyooA30
@@ -99,18 +99,18 @@ This repo contains a toolchain for building to the MiyooA30 handheld.  This was 
 Setup the toolchain by building the docker container.  Make sure you have docker installed and can run docker commands.
 ```
 # Build the toolchain docker container.  This should create a dist folder with executable and assets.
-  ./setup-miyooa30-toolchain.sh
+./setup-miyooa30-toolchain.sh
 
 # Run the build command (linux/mac command, use script for MSYS2)
-  docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src miyooa30-toolchain bash -c "cd /workspace/src && source ~/config.sh && make miyooa30"
+docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src miyooa30-toolchain bash -c "cd /workspace/src && source ~/config.sh && make miyooa30"
 
 # If you want to debug the container, you can get a shell with this (linux/mac command, use script for MSYS2)
-  docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src --entrypoint bash miyooa30-toolchain
+docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src --entrypoint bash miyooa30-toolchain
 ```
 
 ### Localization
 
 Localization files are generated with a python script.  These should be dropped into the src/assets folder automatically.
 ```
-	python3 scripts/scan_locstr.py --languages la en
+python3 scripts/scan_locstr.py --languages la en
 ```
