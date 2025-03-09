@@ -30,7 +30,18 @@ make run
 ### Ubuntu
 
 ```
-apt install build-essential make cmake zip unzip clangd-17 clang-format libsdl2-ttf-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-gfx-dev -y
+apt install\
+ build-essential\
+ make\
+ cmake\
+ zip\
+ unzip\
+ clangd-17\
+ clang-format\
+ libsdl2-ttf-dev\
+ libsdl2-image-dev\
+ libsdl2-mixer-dev\
+ libsdl2-gfx-dev -y
 ```
 
 ### Mac M1^ (brew)
@@ -49,10 +60,19 @@ python3 -m pip install --upgrade pip
 Development on Windows is done through MSYS2
 
 ```
-pacman -S base-devel gcc cmake mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf
+pacman -S base-devel\
+ gcc\
+ cmake\
+ mingw64/mingw-w64-x86_64-SDL2\
+ mingw64/mingw-w64-x86_64-SDL2_image\
+ mingw64/mingw-w64-x86_64-SDL2_mixer\
+ mingw64/mingw-w64-x86_64-SDL2_ttf
 
 # additional development tools
-pacman -S mingw-w64-x86_64-clang mingw-w64-x86_64-clang-tools-extra mingw64/mingw-w64-x86_64-include-what-you-use msys/python
+pacman -S mingw-w64-x86_64-clang\
+ mingw-w64-x86_64-clang-tools-extra\
+ mingw64/mingw-w64-x86_64-include-what-you-use\
+ msys/python
 
 # this linker is much faster on Windows
 pacman -S mingw64/mingw-w64-x86_64-lld
@@ -82,7 +102,7 @@ Install with
 
 ```
 pip install compiledb
-OR
+# OR
 python3 -m pip install compiledb
 ```
 
