@@ -7,7 +7,7 @@ Keyboard controls: arrow keys=move, x=confirm, z=back
 ## Development
 
 Development Requirements
-  - GCC
+  - GCC/Clang
   - SDL2
   - SDL2_image
   - SDL2_ttf
