@@ -2,7 +2,7 @@
 
 The classic solitaire card game adventuring rogue-like.
 
-This code is compiled for web, and is available here: https://benjamin-t-brown.github.io/scoundrel/
+The web version of this game is available here: https://benjamin-t-brown.github.io/scoundrel/
 
 ![image](https://github.com/user-attachments/assets/ba5bc38f-a0d4-4410-a22e-c1ce5bbc61f4)
 -
