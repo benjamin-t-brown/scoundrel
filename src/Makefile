@@ -125,7 +125,7 @@ js: temp
 	rm -rf dist
 	em++ -I. -std=c++17 $(MAIN_ALL) $(CLIENT_CODE) $(SERVER_CODE) $(SHARED_CODE) $(EMCC_LIBS_CLIENT) $(EMCC_EXPORTED) --preload-file assets -o .build/$(EXE).js
 	mkdir -p dist
-	mv -v .build/* dist
+	mv -v .build/* ../web
 	rm -fd .build
 
 # This is intended to be used from within the miyooa30-toolchain docker container

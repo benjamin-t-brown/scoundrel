@@ -13,9 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+        uses: actions/checkout@v4
 
       - name: ffmpeg
         uses: FedericoCarboni/setup-ffmpeg@v1
@@ -38,7 +36,7 @@ jobs:
       - run: ./scripts/ci-build.sh
 
       - name: Deploy ☻
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./web
