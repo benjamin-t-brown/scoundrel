@@ -125,9 +125,9 @@ function LIB() {
       const helpDivInner = document.createElement('div');
       Object.assign(helpDivInner.style, {
         width: '100%',
-        maxWidth: '512px',
+        maxWidth: '640px',
         height: '100%',
-        maxHeight: '512px',
+        maxHeight: '480px',
         background: 'white',
       });
       helpDivInner.innerHTML = `<iframe id="help-iframe" style="width:100%;height:100%" src="${url}"></iframe>

@@ -35,13 +35,8 @@ body {
 }
 .board-original {
   position: relative;
-  /* width: 512px;
-  height: 512px; */
-  /* border: 1px solid white; */
 }
 .canvas-original {
-  /* width: 512px;
-  height: 512px; */
 }
 .board {
   pointer-events: all;
