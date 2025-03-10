@@ -233,6 +233,7 @@ function scaffoldHideControls() {
   if (canvas) {
     if (scaffoldOrientation === 'landscape') {
       canvas.style.width = 'auto';
+      canvas.style.maxWidth = 'unset';
       if (Lib.getConfig().isFullScreen) {
         canvas.style.height = '100%';
       } else {
@@ -275,6 +276,7 @@ function scaffoldShowControls() {
   if (canvas) {
     canvas.style.height = '';
     canvas.style.width = '';
+    canvas.style.maxWidth = '';
   }
   if (scaffoldInner) {
     scaffoldInner.style.height = '';
