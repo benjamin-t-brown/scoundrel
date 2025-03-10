@@ -144,11 +144,9 @@ function handleScreenSizeChange(e) {
   if (e.matches) {
     // Media query matches
     scaffoldOrientation = 'portrait';
-    console.log('Screen is in portrait');
   } else {
     // Media query doesn't match
     scaffoldOrientation = 'landscape';
-    console.log('Screen is in landscape');
   }
   if (!controlsVisible) {
     scaffoldHideControls();
@@ -204,7 +202,7 @@ function scaffoldSetupBoard(dpadLayout, buttonsLayout) {
 
 function scaffoldHideControls() {
   controlsVisible = false;
-  console.log('scaffold hide controls');
+
   const controlsLeft = document.getElementById('scaffold-controls-left');
   const controlsRight = document.getElementById('scaffold-controls-right');
   const controlsBottom = document.getElementById('scaffold-controls-bottom');
