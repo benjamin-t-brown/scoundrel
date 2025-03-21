@@ -7,7 +7,7 @@
 #include "game/actions/ui/HoverCardInRoom.hpp"
 #include "game/actions/ui/SetInputModeRoom.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class StartGame : public AbstractAction {
@@ -46,4 +46,4 @@ protected:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

@@ -9,7 +9,7 @@
 #include "game/actions/ui/SetInputModeNone.hpp"
 #include "game/calculations.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class AttackMonster : public AbstractAction {
@@ -110,4 +110,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

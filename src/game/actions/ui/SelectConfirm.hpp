@@ -9,7 +9,7 @@
 #include "game/actions/game/Heal.hpp"
 #include "game/actions/ui/SetInputModeRoom.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class SelectConfirm : public AbstractAction {
@@ -71,4 +71,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

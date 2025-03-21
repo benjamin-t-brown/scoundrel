@@ -5,9 +5,9 @@
 #include <memory>
 
 #define DISPATCH_ACTION(action, ...)                                           \
-  scoundrel::Dispatch::get().addAction(std::make_unique<action>(__VA_ARGS__))
+  program::Dispatch::get().addAction(std::make_unique<action>(__VA_ARGS__))
 
-namespace scoundrel {
+namespace program {
 
 class Dispatch {
   State* state; // intended unsafe pointer for singleton
@@ -24,4 +24,4 @@ public:
   void update();
 };
 
-} // namespace scoundrel
+} // namespace program

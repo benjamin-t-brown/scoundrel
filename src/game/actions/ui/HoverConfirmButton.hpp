@@ -5,7 +5,7 @@
 #include "game/calculations.hpp"
 #include <utility>
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class HoverConfirmButton : public AbstractAction {
@@ -61,4 +61,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

@@ -3,7 +3,7 @@
 #include "game/actions/AbstractAction.h"
 #include "lib/sdl2wrapper/Localization.h"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class SetInputModeEndGameScreen : public AbstractAction {
@@ -34,4 +34,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

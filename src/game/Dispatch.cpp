@@ -5,7 +5,7 @@
 using sdl2w::Logger;
 using sdl2w::LogType;
 
-namespace scoundrel {
+namespace program {
 
 Dispatch Dispatch::singleton = Dispatch();
 
@@ -39,4 +39,4 @@ void Dispatch::update() {
   }
 }
 
-} // namespace scoundrel
+} // namespace program

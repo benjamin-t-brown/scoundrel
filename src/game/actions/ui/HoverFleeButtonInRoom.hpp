@@ -3,7 +3,7 @@
 #include "game/state.h"
 #include "game/actions/AbstractAction.h"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class HoverFleeButtonInRoom : public AbstractAction {
@@ -19,4 +19,4 @@ protected:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

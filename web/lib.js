@@ -1,7 +1,26 @@
+// This file is for creating a scaffold around a canvas container for an iframed game.
+// It includes the following broad functionality
+// - Supports empscripten or js games
+// - Prompt the game from outside the iframe (start, stop, volume, etc)
+// - Show/Hide on screen controls for game
+// - Center canvas on screen
+// - Gamepad support (emulating keypresses)
+// - Optional external sound support
+// - Optional way to show instructions for game
+//
+// Games using this framework must implement the following global functions
+//  - init: loads the game into the page (usually with some js injection).  After load, the
+//          game should call Lib.notifyGameReady() to signal it is ready to start.
+//  - start: signals the game to begin (usually if there is a "menu" or something that is shown)
+
 /** @type {any} */
 var thisWindow = window;
 
 function LIB() {
+  const TARGET_WIDTH = 512;
+  const TARGET_HEIGHT = 512;
+  const AudioContext = thisWindow.AudioContext || thisWindow.webkitAudioContext;
+  const audioCtx = new AudioContext();
   const config = {
     startButtonEnabled: true,
     soundEnabled: true,
@@ -15,6 +34,103 @@ function LIB() {
     isFullScreen: false,
   };
 
+  class CtxAudio {
+    audioBuffer;
+    source;
+    audioCtx;
+    gainNode;
+    startTime = 0;
+
+    paused = true;
+
+    constructor(buffer, audioCtx) {
+      this.audioCtx = audioCtx;
+      this.audioBuffer = buffer;
+      this.source = this.audioCtx.createBufferSource();
+      this.source.buffer = this.audioBuffer;
+      this.gainNode = audioCtx.createGain();
+      this.source.connect(this.gainNode);
+      this.gainNode.connect(this.audioCtx.destination);
+    }
+
+    copy() {
+      return new CtxAudio(this.audioBuffer, new AudioContext());
+    }
+
+    copyWithCtx(audioCtx) {
+      return new CtxAudio(this.audioBuffer, audioCtx);
+    }
+
+    static async createCtxAudio(arrayBuffer, ctx) {
+      const audioCtx = ctx ?? new AudioContext();
+      return new Promise((resolve, reject) => {
+        audioCtx.decodeAudioData(
+          arrayBuffer,
+          buffer => {
+            resolve(new CtxAudio(buffer, audioCtx));
+          },
+          err => {
+            console.error(`Error with decoding audio data: ${err}`);
+            reject(err);
+          }
+        );
+      });
+    }
+
+    static async loadCtxAudio(url, ctx) {
+      const blob = await fetch(url).then(res => res.blob());
+      const arrayBuffer = await blob.arrayBuffer();
+      return await CtxAudio.createCtxAudio(arrayBuffer, ctx);
+    }
+
+    play(args) {
+      this.source = this.audioCtx.createBufferSource();
+      this.source.buffer = this.audioBuffer;
+      this.source.loop = false;
+      this.gainNode = this.audioCtx.createGain();
+      this.source.connect(this.gainNode);
+      this.gainNode.connect(this.audioCtx.destination);
+      this.setVolume(args.volume);
+      this.source.loop = args.loop;
+      this.source.start(0, args.startTime, args.duration);
+      this.unpause();
+      this.startTime = this.audioCtx.currentTime;
+    }
+
+    stop() {
+      this.pause();
+    }
+    pause() {
+      if (!this.paused) {
+        this.source.stop();
+        this.paused = true;
+      }
+    }
+    unpause() {
+      this.paused = false;
+    }
+
+    isPaused() {
+      return this.paused;
+    }
+
+    setVolume(volume) {
+      this.gainNode.gain.setValueAtTime(volume, this.audioCtx.currentTime);
+    }
+
+    getVolume() {
+      return this.gainNode.gain.value;
+    }
+
+    getDuration() {
+      return this.audioBuffer.duration;
+    }
+
+    getCurrentTime() {
+      return this.audioCtx.currentTime - this.startTime;
+    }
+  }
+
   let keyboardLayout = {};
 
   // SDL2 Button Codes for emcc/gcc compiler
@@ -22,10 +138,12 @@ function LIB() {
   this.BUTTON_RIGHT = 1073741903;
   this.BUTTON_UP = 1073741906;
   this.BUTTON_DOWN = 1073741905;
-  this.BUTTON_SHIFT = 1073742049;
+  this.BUTTON_SHIFT = 1073742049;//225
   this.BUTTON_ENTER = 13;
-  this.BUTTON_SPACE = 32;
-  this.BUTTON_Z = 122;
+  this.BUTTON_SPACE = 32;//44
+  this.BUTTON_Z = 122;//29
+  this.BUTTON_C = 99;//6
+  this.BUTTON_ASSIST = 1073741824;
 
   const subscriptions = {
     onButtonDown: [],
@@ -38,15 +156,17 @@ function LIB() {
   function getLabels() {
     return {
       okay: 'Okay',
+      tapToStart: 'Tap to Start',
     };
   }
+  this.getLabels = getLabels.bind(this);
 
   this.toggleSound = function () {
     if (config.soundEnabled) {
-      console.log('[Lib] Disable sound');
+      console.log('[IFRAME] Disable sound');
       Module.ccall('disableSound');
     } else {
-      console.log('[Lib] Enabled sound');
+      console.log('[IFRAME] Enabled sound');
       Module.ccall('enableSound');
     }
     config.soundEnabled = !config.soundEnabled;
@@ -57,8 +177,6 @@ function LIB() {
     this.invokeEvent('onToggleSound', config.soundEnabled);
   };
   this.toggleScale = function () {
-    const board = document.getElementById('board');
-    const canvas = document.getElementById('canvas');
     config.originalScale = !config.originalScale;
   };
   this.setScale = function (isOriginal) {
@@ -125,9 +243,9 @@ function LIB() {
       const helpDivInner = document.createElement('div');
       Object.assign(helpDivInner.style, {
         width: '100%',
-        maxWidth: '640px',
+        maxWidth: TARGET_WIDTH + 'px',
         height: '100%',
-        maxHeight: '480px',
+        maxHeight: TARGET_HEIGHT + 'px',
         background: 'white',
       });
       helpDivInner.innerHTML = `<iframe id="help-iframe" style="width:100%;height:100%" src="${url}"></iframe>
@@ -142,6 +260,13 @@ function LIB() {
         'No help URL found to show help from this object:',
         helpObj
       );
+    }
+  };
+  this.hideHelp = function () {
+    const helpDiv = document.getElementById('help');
+    if (helpDiv) {
+      config.disableInput = false;
+      helpDiv.remove();
     }
   };
   this.hideHelp = function () {
@@ -185,6 +310,7 @@ function LIB() {
   this.hideButtons = function () {
     const controls = document.getElementById('on-screen-controls');
     if (controls) controls.style.display = 'none';
+    console.log('hide controls');
     if (thisWindow.scaffoldHideControls) {
       thisWindow.scaffoldHideControls();
     }
@@ -192,6 +318,7 @@ function LIB() {
   this.showButtons = function () {
     const controls = document.getElementById('on-screen-controls');
     if (controls) controls.style.display = 'flex';
+    console.log('show controls');
     if (thisWindow.scaffoldShowControls) {
       thisWindow.scaffoldShowControls();
     }
@@ -256,7 +383,7 @@ function LIB() {
 
   this.notifyParentFrame = function (action, payload) {
     if (window.parent) {
-      console.log('[Lib] Notify parent', action);
+      console.log('[IFRAME] Notify parent', action);
       window.parent.postMessage(
         JSON.stringify({
           action,
@@ -265,11 +392,12 @@ function LIB() {
         '*'
       );
     } else {
-      console.log('[Lib] No parent to notify.');
+      console.log('[IFRAME] No parent to notify.');
     }
   };
 
   this.notifyGameReady = function () {
+    console.log('notify game ready');
     // wait just a bit to show the game so the audio doesn't glitch out (like it does for some reason for wasm stuff that has debug on)
     this.setWASMVolume(33);
     if (Lib.getConfig().autoPushStart) {
@@ -317,11 +445,94 @@ function LIB() {
     this.notifyParentFrame('ESCAPE_UNPRESSED', {});
   };
 
+  const SOUND_PATH = '';
+  const sounds = {};
+
+  this.loadSound = async function (name, url, volume) {
+    url = `${SOUND_PATH}${url}`;
+    return new Promise((resolve, reject) => {
+      CtxAudio.loadCtxAudio(url, audioCtx)
+        .then(sound => {
+          sounds[name] = {
+            sound,
+            audio: sound,
+            soundDuration: 5000,
+            volume: volume,
+          };
+          console.log('[IFRAME] sound loaded', name, url);
+          resolve(sound);
+        })
+        .catch(err => {
+          console.log('failed to load sound:', name, url);
+          reject(err);
+        });
+    });
+  };
+
+  this.getSound = function (soundName) {
+    const soundObj = sounds[soundName];
+    if (soundObj) {
+      const s = {
+        duration: 0,
+        ...soundObj,
+        //soundDuration merged in from soundObj
+        // audio: soundObj.audio.cloneNode(),
+        audio: soundObj.audio,
+        soundName,
+        lastStartTimestamp: window.performance.now(),
+        isPlaying: false,
+        isPaused: false,
+      };
+
+      return s;
+    } else {
+      console.error('Could not find sound with name: ', soundName);
+      return null;
+    }
+  };
+
+  this.playSound = function (soundObj) {
+    if (!config.soundEnabled) {
+      return;
+    }
+    const { sound, volume } = soundObj;
+    sound.play({
+      startTime: 0,
+      duration: 5000,
+      loop: false,
+      volume: volume || 0.5,
+    });
+
+    soundObj.lastStartTimestamp = window.performance.now();
+    soundObj.isPlaying = true;
+  };
+
+  this.playSoundName = function (soundName) {
+    const soundObj = this.getSound(soundName);
+    if (soundObj) {
+      this.playSound(soundObj);
+    }
+  };
+
+  this.stopSound = function (soundObj) {
+    const { sound } = soundObj;
+    sound.pause();
+    soundObj.isPlaying = false;
+  };
+
+  this.setVolume = function (v) {
+    for (const i in sounds) {
+      const { audio } = sounds[i];
+      audio.volume = v;
+    }
+  };
+
   // number between 0 and 100
   this.setWASMVolume = function (pct) {
     if (isNaN(pct)) {
       pct = 33;
     }
+    console.log('[IFRAME] Set WASM volume pct', pct);
     Module.ccall('setVolume', 'void', ['number'], [pct]);
     this.invokeEvent('onSetVolume', pct);
   };
@@ -562,6 +773,7 @@ var simulateKeyPress = (buttonIndex, isDown) => {
     return;
   }
 
+  console.log('Simulate key press', buttonIndex, key, isDown);
   var simulatedEvent = new KeyboardEvent(isDown ? 'keydown' : 'keyup', {
     key,
   });
@@ -666,9 +878,10 @@ var expand = false;
 var isArcadeCabinet = params.get('cabinet');
 var gamepadInterval;
 var captureGamePad = isArcadeCabinet ? false : true;
+var language = params.get('language') || 'en';
 
 var Module = {
-  arguments: ['--wait', '--nointro'],
+  arguments: ['--wait', '--nointro', '--language ' + language],
   jsLoaded: function () {
     Module.preRun[0]();
   },
@@ -693,6 +906,8 @@ var Module = {
       if (isArcadeCabinet) {
         Lib.disableModuleControls();
       }
+      // This should be notified from inside the program itself
+      // Lib.notifyGameReady();
     },
   ],
   canvas: (function () {
@@ -702,13 +917,14 @@ var Module = {
         'webglcontextlost',
         function (e) {
           console.error(
-            '[Lib] WebGL context lost. You will need to reload the page.'
+            '[IFRAME] WebGL context lost. You will need to reload the page.'
           );
           Lib.showError();
           e.preventDefault();
         },
         false
       );
+      // const isArcadeCabinet = expand === 'true';
       if (isArcadeCabinet) {
         canvas.style.border = 'unset';
       }
@@ -717,7 +933,7 @@ var Module = {
     return canvas;
   })(),
   onAbort: function () {
-    console.error('[Lib] Program encountered an unknown error.');
+    console.error('[IFRAME] Program encountered an unknown error.');
     Lib.showError();
   },
   totalDependencies: 0,
@@ -785,6 +1001,7 @@ window.addEventListener('message', event => {
       Lib.getConfig().soundEnabled = false;
       Lib.toggleSound();
     } else if (data.action === 'SET_VOLUME') {
+      Lib.setVolume(data.payload);
       Lib.setWASMVolume(Math.floor(data.payload * 100));
     } else if (data.action === 'BUTTON_DOWN') {
       Lib.handleButtonDown(data.payload);
@@ -807,6 +1024,7 @@ window.addEventListener('message', event => {
       }
     } else if (data.action === 'BEGIN_GAME') {
       if (thisWindow.start) {
+        console.log('BEGIN GAME', data);
         // TODO if it's touchscreen, unset fullscreen and show controls
         // Lib.unsetDisplayModeFullscreen();
         captureGamePad = true;
@@ -818,7 +1036,7 @@ window.addEventListener('message', event => {
       }
     }
   } catch (e) {
-    console.warn('[Lib] Error on postMessage handler', e, event.data);
+    console.warn('[IFRAME] Error on postMessage handler', e, event.data);
   }
 });
 
@@ -832,7 +1050,7 @@ setInterval(() => {
 async function localInit() {
   verify();
   thisWindow.loadTimeout = setTimeout(function () {
-    console.error('[Lib] Content took too long to load.');
+    console.error('[IFRAME] Content took too long to load.');
     Lib.showError();
   }, 60000);
 
@@ -843,7 +1061,7 @@ async function localInit() {
     });
   } catch (e) {
     console.error(
-      '[Lib] Error calling window.init function, is it defined for this program?'
+      '[IFRAME] Error calling window.init function, is it defined for this program?'
     );
     throw e;
   }
@@ -851,10 +1069,10 @@ async function localInit() {
 
 function verify() {
   if (!thisWindow.init) {
-    console.error('[Lib] no `init` found.');
+    console.error('[IFRAME] no `init` found.');
   }
   if (!thisWindow.start) {
-    console.error('[Lib] no `start` found.');
+    console.error('[IFRAME] no `start` found.');
   }
 }
 
@@ -864,7 +1082,8 @@ if (!isArcadeCabinet) {
   Lib.getConfig().startButtonEnabled = false;
   if (startButton) startButton.style.display = 'none';
   window.addEventListener('load', () => {
-    console.log('[Lib] loaded Lib', expand);
+    console.log('[IFRAME] loaded Lib', expand);
+    // Lib.toggleControls();
     Lib.setControls(true);
     Lib.toggleScale();
     const toggleScaleElem = document.getElementById('toggle-scale');
@@ -897,7 +1116,7 @@ if (tapToStart === 'true') {
     div.style.display = 'none';
     localInit();
   };
-  div.innerHTML = 'Tap to Start';
+  div.innerHTML = Lib.getLabels().tapToStart;
   div.className = 'tap-to-start';
   document.body.appendChild(div);
   thisWindow.addEventListener('mousedown', thisWindow.onTapToStart);

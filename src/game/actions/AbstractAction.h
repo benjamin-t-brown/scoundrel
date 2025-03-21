@@ -5,7 +5,7 @@
 #include <cxxabi.h>
 #endif
 
-namespace scoundrel {
+namespace program {
 
 struct State;
 
@@ -40,4 +40,4 @@ public:
 };
 } // namespace actions
 
-} // namespace scoundrel
+} // namespace program

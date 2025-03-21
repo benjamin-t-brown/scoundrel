@@ -7,7 +7,7 @@
 #include "game/actions/stateHelpers.hpp"
 #include "game/actions/ui/SetInputModeNone.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class Flee : public AbstractAction {
@@ -38,4 +38,4 @@ protected:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

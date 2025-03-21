@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace scoundrel {
+namespace program {
 namespace transform {
 struct Transform {
   int t = 0;
@@ -69,4 +69,4 @@ inline void update(Transform& transform, const int dt) {
 
 } // namespace transform
 
-} // namespace scoundrel
+} // namespace program

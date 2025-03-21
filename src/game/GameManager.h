@@ -4,7 +4,7 @@
 #include "game/state.h"
 #include "lib/sdl2wrapper/Window.h"
 
-namespace scoundrel {
+namespace program {
 
 class GameManager {
   State state;
@@ -22,4 +22,4 @@ public:
   void render();
 };
 
-} // namespace scoundrel
+} // namespace program

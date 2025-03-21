@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace scoundrel {
+namespace program {
 
 namespace actions {
 class AbstractAction;
@@ -134,7 +134,8 @@ struct State {
 
   int playerHealth = 20;
   int playerHealthMax = 20;
+  int wins = 0;
   bool isVictory = false;
 };
 
-} // namespace scoundrel
+} // namespace program

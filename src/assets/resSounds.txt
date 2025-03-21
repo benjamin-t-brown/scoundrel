@@ -14,3 +14,4 @@ Sound,no_damage,assets/no_damage.wav
 Sound,worm1,assets/worm1.wav
 Sound,worm2,assets/worm2.wav
 Sound,worm3,assets/worm3.wav
+Sound,start,assets/scoundrel_start.wav

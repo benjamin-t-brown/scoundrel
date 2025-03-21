@@ -15,7 +15,7 @@
 #include "lib/sdl2wrapper/AssetLoader.h"
 #include "lib/sdl2wrapper/Window.h"
 
-namespace scoundrel {
+namespace program {
 GameManager::GameManager(sdl2w::Window& windowA)
     : window(windowA), r(Render(windowA)) {
   Dispatch::init(&state);
@@ -26,15 +26,19 @@ GameManager::~GameManager() {}
 void GameManager::load() {
   sdl2w::loadAssetsFromFile("sprite", "assets/resSprites.txt");
   sdl2w::loadAssetsFromFile("sound", "assets/resSounds.txt");
+  auto hiscores = hiscore::getHighScores();
+  if (hiscores.size()) {
+    state.wins = hiscores[0].score;
+  }
 }
 
 void GameManager::start() {
   DISPATCH_ACTION(actions::SetInputModeMenu);
   libhtml::notifyGameReady();
+  state.ui.soundsToPlay.push_back("start");
 }
 
 void GameManager::handleKeyPress(const std::string& key) {
-  // logger::info(("Keypress: " + key).c_str());
   if (state.ui.inputMode == InputMode::CONFIRM) {
     if (isLeftKey(key)) {
       state.ui.soundsToPlay.push_back("ui_hover");
@@ -137,6 +141,7 @@ void GameManager::render() {
   if (state.ui.inputMode == InputMode::MENU) {
     r.renderMenuScreen(state.ui.titleMessage,
                        state.ui.instructionMessage,
+                       state.wins,
                        state.ui.menuCardsT);
     return;
   }
@@ -195,4 +200,4 @@ void GameManager::render() {
   }
 }
 
-} // namespace scoundrel
+} // namespace program

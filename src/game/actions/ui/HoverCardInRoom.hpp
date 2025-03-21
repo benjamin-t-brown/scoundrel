@@ -3,7 +3,7 @@
 #include "game/actions/AbstractAction.h"
 #include "game/calculations.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class HoverCardInRoom : public AbstractAction {
@@ -63,4 +63,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

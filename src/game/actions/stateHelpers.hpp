@@ -3,7 +3,7 @@
 #include "game/state.h"
 #include "game/utils/transform.hpp"
 
-namespace scoundrel {
+namespace program {
 
 inline void resetCardPositions(State& stateRef) {
   const int spacing = 4;
@@ -50,4 +50,4 @@ inline void resetCardPositions(State& stateRef) {
   }
 }
 
-} // namespace scoundrel
+} // namespace program

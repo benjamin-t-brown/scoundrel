@@ -5,6 +5,7 @@ MAIN_ALL=main.cpp
 CLIENT_LIB_CODE=\
 
 SHARED_LIB_CODE=\
+lib/hiscore/hiscore.cpp\
 lib/sdl2wrapper/Animation.cpp\
 lib/sdl2wrapper/AssetLoader.cpp\
 lib/sdl2wrapper/Events.cpp\

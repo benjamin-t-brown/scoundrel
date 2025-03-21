@@ -6,7 +6,7 @@
 #include "game/calculations.hpp"
 #include "lib/sdl2wrapper/Localization.h"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class SetInputModeConfirm : public AbstractAction {
@@ -93,4 +93,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

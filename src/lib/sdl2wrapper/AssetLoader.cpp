@@ -283,10 +283,32 @@ std::string loadFileAsString(const std::string& path) {
   Logger().get(DEBUG) << "Loading file " << (PREFIX + path) << Logger::endl;
   std::ifstream file(PREFIX + path);
   if (!file) {
+    // TODO emscripten is set to not catch errors
+#ifdef __EMSCRIPTEN__
+    return "";
+#else
     throw std::runtime_error("Error opening file: " + path);
+#endif
   }
   std::stringstream buffer;
   buffer << file.rdbuf();
   return buffer.str();
 }
+
+std::string saveFileAsString(const std::string& path,
+                             const std::string& content) {
+  Logger().get(DEBUG) << "Saving file " << (PREFIX + path) << Logger::endl;
+  std::ofstream file(PREFIX + path);
+  if (!file) {
+    // TODO emscripten is set to not catch errors
+#ifdef __EMSCRIPTEN__
+    return "";
+#else
+    throw std::runtime_error("Error opening file for save: " + path);
+#endif
+  }
+  file << content;
+  return content;
+}
+
 } // namespace sdl2w

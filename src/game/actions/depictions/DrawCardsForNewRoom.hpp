@@ -3,7 +3,7 @@
 #include "game/state.h"
 #include "lib/sdl2wrapper/Logger.h"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class DrawCardsForNewRoom : public AbstractAction {
@@ -40,4 +40,4 @@ protected:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

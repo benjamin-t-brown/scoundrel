@@ -7,7 +7,7 @@
 #include "game/actions/depictions/ModifyPlayerHp.hpp"
 #include "game/actions/ui/SetInputModeNone.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class Heal : public AbstractAction {
@@ -52,4 +52,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

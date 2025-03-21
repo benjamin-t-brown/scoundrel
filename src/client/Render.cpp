@@ -7,7 +7,7 @@
 #include "lib/sdl2wrapper/Window.h"
 #include <sstream>
 
-namespace scoundrel {
+namespace program {
 
 double Render::cardScale = 3.;
 
@@ -80,7 +80,7 @@ void Render::renderCursor(const Cursor& cursor) {
 void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
   const std::pair<int, int> textPos = {window.renderWidth / 2,
                                        window.renderHeight / 2 -
-                                           CARD_HEIGHT * CARD_SCALE / 2 + 6};
+                                           CARD_HEIGHT * CARD_SCALE / 2 + 16};
 
   window.setCurrentFont("default", 22);
   window.drawTextCentered(
@@ -264,6 +264,7 @@ void Render::renderEndGameScreen(const std::string& message,
 
 void Render::renderMenuScreen(const std::string& message,
                               const std::string& instructionMessage,
+                              int numWins,
                               int menuCardsT) {
   SDL_Texture* bgRect = window.getStaticColorTexture(
       window.renderWidth, window.renderHeight, SDL_Color{0, 0, 0, 255});
@@ -272,15 +273,26 @@ void Render::renderMenuScreen(const std::string& message,
 
   window.setCurrentFont("default", 48);
   window.drawTextCentered(message,
+                          window.renderWidth / 2 - 2,
+                          window.renderHeight / 2 - 50 + 14 - 2,
+                          SDL_Color{190, 100, 100});
+  window.drawTextCentered(message,
                           window.renderWidth / 2,
-                          window.renderHeight / 2 - 50,
+                          window.renderHeight / 2 - 50 + 14,
                           SDL_Color{255, 255, 255});
 
   window.setCurrentFont("default", 22);
   window.drawTextCentered(instructionMessage,
                           window.renderWidth / 2,
-                          window.renderHeight / 2 + 25,
+                          window.renderHeight / 2 + 50,
                           SDL_Color{255, 255, 255});
+
+  window.setCurrentFont("default", 22);
+  window.drawTextCentered(sdl2w::L10n::trans(LOCSTR("Wins")) + ": " +
+                              std::to_string(numWins),
+                          window.renderWidth / 2,
+                          window.renderHeight / 2 + 12,
+                          SDL_Color{200, 200,200});
 
   int numCardsWide = window.renderWidth / CARD_WIDTH * CARD_SCALE + 1;
 
@@ -319,4 +331,4 @@ void Render::renderMenuScreen(const std::string& message,
   }
 }
 
-} // namespace scoundrel
+} // namespace program

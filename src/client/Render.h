@@ -7,7 +7,7 @@ namespace sdl2w {
 class Window;
 }
 
-namespace scoundrel {
+namespace program {
 
 class Render {
   sdl2w::Window& window;
@@ -32,6 +32,8 @@ public:
   void renderEndGameScreen(const std::string& message,
                            const std::string& instructionMessage);
   void renderMenuScreen(const std::string& message,
-                        const std::string& instructionMessage, int menuCardsT);
+                        const std::string& instructionMessage,
+                        int numWins,
+                        int menuCardsT);
 };
-} // namespace scoundrel
+} // namespace program

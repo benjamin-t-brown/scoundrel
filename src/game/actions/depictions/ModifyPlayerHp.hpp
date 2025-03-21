@@ -2,7 +2,7 @@
 #include "game/state.h"
 #include "game/actions/AbstractAction.h"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class ModifyPlayerHp : public AbstractAction {
@@ -28,4 +28,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

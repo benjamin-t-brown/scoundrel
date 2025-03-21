@@ -6,7 +6,7 @@
 #include "game/actions/ui/SetInputModeNone.hpp"
 #include "game/utils/transform.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class EquipWeapon : public AbstractAction {
@@ -51,4 +51,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

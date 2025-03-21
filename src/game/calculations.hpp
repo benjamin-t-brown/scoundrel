@@ -2,7 +2,7 @@
 
 #include "game/state.h"
 
-namespace scoundrel {
+namespace program {
 
 inline int calcNextHealthAfterHealCard(int hp, int maxHp, VisualCard healCard) {
   int healValue = healCard.card.value;
@@ -39,4 +39,4 @@ calcNextHealthAfterAttack(int hp,
   return nextHp;
 }
 
-} // namespace scoundrel
+} // namespace program

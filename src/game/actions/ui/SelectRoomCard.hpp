@@ -4,7 +4,7 @@
 #include "game/actions/AbstractAction.h"
 #include "game/actions/ui/SetInputModeConfirm.hpp"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class SelectRoomCard : public AbstractAction {
@@ -48,4 +48,4 @@ public:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

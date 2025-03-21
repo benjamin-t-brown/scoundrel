@@ -2,22 +2,25 @@
 // that is exactly 640 x 480, including controls, and automatic
 // resizing of the iframe to fit the scaffold.
 
+var TARGET_WIDTH = 640;
+var TARGET_HEIGHT = 480;
+
 const buttonCallbackStrings = {
   Up: {
     down: 'Lib.handleButtonDown(Lib.BUTTON_UP)',
-    up: 'Lib.handleButtonUp(Lib.BUTTON_DOWN)',
+    up: 'Lib.handleButtonUp(Lib.BUTTON_UP)',
   },
   Down: {
     down: 'Lib.handleButtonDown(Lib.BUTTON_DOWN)',
-    up: 'Lib.handleButtonUp(Lib.BUTTON_UP)',
+    up: 'Lib.handleButtonUp(Lib.BUTTON_DOWN)',
   },
   Left: {
     down: 'Lib.handleButtonDown(Lib.BUTTON_LEFT)',
-    up: 'Lib.handleButtonUp(Lib.BUTTON_RIGHT)',
+    up: 'Lib.handleButtonUp(Lib.BUTTON_LEFT)',
   },
   Right: {
     down: 'Lib.handleButtonDown(Lib.BUTTON_RIGHT)',
-    up: 'Lib.handleButtonUp(Lib.BUTTON_LEFT)',
+    up: 'Lib.handleButtonUp(Lib.BUTTON_RIGHT)',
   },
   Confirm: {
     down: 'Lib.handleButtonDown(Lib.BUTTON_SPACE)',
@@ -28,8 +31,8 @@ const buttonCallbackStrings = {
     up: 'Lib.handleButtonUp(Lib.BUTTON_Z)',
   },
   Shift: {
-    down: 'Lib.handleButtonDown(Lib.BUTTON_SHIFT)',
-    up: 'Lib.handleButtonUp(Lib.BUTTON_SHIFT)',
+    down: 'Lib.handleButtonDown(Lib.BUTTON_ASSIST)',
+    up: 'Lib.handleButtonUp(Lib.BUTTON_ASSIST)',
   },
 };
 
@@ -37,32 +40,32 @@ const controlsDpadNormal = `
 <div class="scaffold-dpad">
   <div class="scaffold-flex-row-center">
     <button class="scaffold-button scaffold-button-direction"
-      onmousedown="${buttonCallbackStrings.Up.up}"
-      ontouchstart="${buttonCallbackStrings.Up.up}"
-      onmouseup="${buttonCallbackStrings.Up.down}"
-      ontouchend="${buttonCallbackStrings.Up.down}"
+      onmousedown="${buttonCallbackStrings.Up.down}"
+      ontouchstart="${buttonCallbackStrings.Up.down}"
+      onmouseup="${buttonCallbackStrings.Up.up}"
+      ontouchend="${buttonCallbackStrings.Up.up}"
       >↑</button>
   </div>
   <div class="scaffold-flex-row-space-between">
     <button class="scaffold-button scaffold-button-direction"
-      onmousedown="${buttonCallbackStrings.Left.up}"
-      ontouchstart="${buttonCallbackStrings.Left.up}"
-      onmouseup="${buttonCallbackStrings.Left.down}"
-      ontouchend="${buttonCallbackStrings.Left.down}"
+      onmousedown="${buttonCallbackStrings.Left.down}"
+      ontouchstart="${buttonCallbackStrings.Left.down}"
+      onmouseup="${buttonCallbackStrings.Left.up}"
+      ontouchend="${buttonCallbackStrings.Left.up}"
       >←</button>
     <button class="scaffold-button scaffold-button-direction"
-      onmousedown="${buttonCallbackStrings.Right.up}"
-      ontouchstart="${buttonCallbackStrings.Right.up}"
-      onmouseup="${buttonCallbackStrings.Right.down}"
-      ontouchend="${buttonCallbackStrings.Right.down}"
+      onmousedown="${buttonCallbackStrings.Right.down}"
+      ontouchstart="${buttonCallbackStrings.Right.down}"
+      onmouseup="${buttonCallbackStrings.Right.up}"
+      ontouchend="${buttonCallbackStrings.Right.up}"
       >→</button>  
   </div>
   <div class="scaffold-flex-row-center">
     <button class="scaffold-button scaffold-button-direction"
-      onmousedown="${buttonCallbackStrings.Down.up}"
-      ontouchstart="${buttonCallbackStrings.Down.up}"
-      onmouseup="${buttonCallbackStrings.Down.down}"
-      ontouchend="${buttonCallbackStrings.Down.down}"
+      onmousedown="${buttonCallbackStrings.Down.down}"
+      ontouchstart="${buttonCallbackStrings.Down.down}"
+      onmouseup="${buttonCallbackStrings.Down.up}"
+      ontouchend="${buttonCallbackStrings.Down.up}"
       >↓</button>
   </div>
 </div>
@@ -72,16 +75,16 @@ const controlsDpadLr = `
 <div class="scaffold-dpad">
   <div class="scaffold-flex-row-space-between">
     <button class="scaffold-button scaffold-button-direction"
-      onmousedown="${buttonCallbackStrings.Left.up}"
-      ontouchstart="${buttonCallbackStrings.Left.up}"
-      onmouseup="${buttonCallbackStrings.Left.down}"
-      ontouchend="${buttonCallbackStrings.Left.down}"
+      onmousedown="${buttonCallbackStrings.Left.down}"
+      ontouchstart="${buttonCallbackStrings.Left.down}"
+      onmouseup="${buttonCallbackStrings.Left.up}"
+      ontouchend="${buttonCallbackStrings.Left.up}"
       >←</button>
     <button class="scaffold-button scaffold-button-direction"
-      onmousedown="${buttonCallbackStrings.Right.up}"
-      ontouchstart="${buttonCallbackStrings.Right.up}"
-      onmouseup="${buttonCallbackStrings.Right.down}"
-      ontouchend="${buttonCallbackStrings.Right.down}"
+      onmousedown="${buttonCallbackStrings.Right.down}"
+      ontouchstart="${buttonCallbackStrings.Right.down}"
+      onmouseup="${buttonCallbackStrings.Right.up}"
+      ontouchend="${buttonCallbackStrings.Right.up}"
       >→</button>  
   </div>
 </div>
@@ -91,18 +94,18 @@ const controlsButtonsAb = `
 <div class="scaffold-buttons">
   <div class="scaffold-flex-row-flex-end">
     <button class="scaffold-button scaffold-button-confirm"
-      onmousedown="${buttonCallbackStrings.Confirm.up}"
-      ontouchstart="${buttonCallbackStrings.Confirm.up}"
-      onmouseup="${buttonCallbackStrings.Confirm.down}"
-      ontouchend="${buttonCallbackStrings.Confirm.down}"
+      onmousedown="${buttonCallbackStrings.Confirm.down}"
+      ontouchstart="${buttonCallbackStrings.Confirm.down}"
+      onmouseup="${buttonCallbackStrings.Confirm.up}"
+      ontouchend="${buttonCallbackStrings.Confirm.up}"
       >A</button>
   </div>
   <div class="scaffold-flex-row-center">
     <button class="scaffold-button scaffold-button-cancel"
-      onmousedown="${buttonCallbackStrings.Cancel.up}"
-      ontouchstart="${buttonCallbackStrings.Cancel.up}"
-      onmouseup="${buttonCallbackStrings.Cancel.down}"
-      ontouchend="${buttonCallbackStrings.Cancel.down}"
+      onmousedown="${buttonCallbackStrings.Cancel.down}"
+      ontouchstart="${buttonCallbackStrings.Cancel.down}"
+      onmouseup="${buttonCallbackStrings.Cancel.up}"
+      ontouchend="${buttonCallbackStrings.Cancel.up}"
       >B</button>
   </div>
 </div>
@@ -111,27 +114,28 @@ const controlsButtonsAb = `
 const controlsButtonsAbShift = `
 <div class="scaffold-buttons">
   <div class="scaffold-flex-row-center">
-    <button class="scaffold-button scaffold-button-shift"
-      onmousedown="${buttonCallbackStrings.Shift.up}"
-      ontouchstart="${buttonCallbackStrings.Shift.up}"
-      onmouseup="${buttonCallbackStrings.Shift.down}"
-      ontouchend="${buttonCallbackStrings.Shift.down}"
-      >X</button>
+
   </div>
-  <div class="scaffold-flex-row-flex-end">
+  <div class="scaffold-flex-row-space-between">
+    <button class="scaffold-button scaffold-button-shift"
+      onmousedown="${buttonCallbackStrings.Shift.down}"
+      ontouchstart="${buttonCallbackStrings.Shift.down}"
+      onmouseup="${buttonCallbackStrings.Shift.up}"
+      ontouchend="${buttonCallbackStrings.Shift.up}"
+      >X</button>
     <button class="scaffold-button scaffold-button-confirm"
-      onmousedown="${buttonCallbackStrings.Confirm.up}"
-      ontouchstart="${buttonCallbackStrings.Confirm.up}"
-      onmouseup="${buttonCallbackStrings.Confirm.down}"
-      ontouchend="${buttonCallbackStrings.Confirm.down}"
+      onmousedown="${buttonCallbackStrings.Confirm.down}"
+      ontouchstart="${buttonCallbackStrings.Confirm.down}"
+      onmouseup="${buttonCallbackStrings.Confirm.up}"
+      ontouchend="${buttonCallbackStrings.Confirm.up}"
       >A</button>
   </div>
   <div class="scaffold-flex-row-center">
     <button class="scaffold-button scaffold-button-cancel"
-      onmousedown="${buttonCallbackStrings.Cancel.up}"
-      ontouchstart="${buttonCallbackStrings.Cancel.up}"
-      onmouseup="${buttonCallbackStrings.Cancel.down}"
-      ontouchend="${buttonCallbackStrings.Cancel.down}"
+      onmousedown="${buttonCallbackStrings.Cancel.down}"
+      ontouchstart="${buttonCallbackStrings.Cancel.down}"
+      onmouseup="${buttonCallbackStrings.Cancel.up}"
+      ontouchend="${buttonCallbackStrings.Cancel.up}"
       >B</button>
   </div>
 </div>
@@ -174,7 +178,7 @@ function scaffoldSetupBoard(dpadLayout, buttonsLayout) {
         <div class="scaffold-vertical-spacer"></div>
       </div>
       <div id="board" class="board scaffold-board">
-        <canvas id="canvas" width="640" height="480"></canvas>
+        <canvas id="canvas" width="${TARGET_WIDTH}" height="${TARGET_HEIGHT}"></canvas>
       </div>
       <div id="scaffold-controls-right" class="scaffold-controls">
         ${controlsButtons}

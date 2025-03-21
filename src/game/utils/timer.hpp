@@ -1,6 +1,6 @@
 #pragma once
 
-namespace scoundrel {
+namespace program {
 namespace timer {
 
 struct Timer {
@@ -24,4 +24,4 @@ inline void update(Timer& timer, const double dt) {
 }
 
 } // namespace timer
-} // namespace scoundrel
+} // namespace program

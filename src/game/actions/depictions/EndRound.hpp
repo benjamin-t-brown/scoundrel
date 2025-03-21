@@ -7,8 +7,9 @@
 #include "game/actions/ui/SetInputModeEndGameScreen.hpp"
 #include "game/actions/ui/SetInputModeRoom.hpp"
 #include "game/state.h"
+#include "lib/hiscore/hiscore.h"
 
-namespace scoundrel {
+namespace program {
 namespace actions {
 
 class EndRound : public AbstractAction {
@@ -28,6 +29,8 @@ protected:
     if (stateRef.room.size() <= 1 && stateRef.stack.size() == 0) {
       // victory!
       libhtml::notifyGameCompleted(true);
+      stateRef.wins++;
+      hiscore::saveHighScores({{"player", stateRef.wins}});
       DISPATCH_ACTION(SetInputModeEndGameScreen, true);
       return;
     }
@@ -46,4 +49,4 @@ protected:
 };
 
 } // namespace actions
-} // namespace scoundrel
+} // namespace program

@@ -157,6 +157,10 @@ docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src 
 
 To get this running on a MiyooA30, copy the contents of the src/dist folder onto the sdcard. This would be the binary and assets folder into a folder called "ScoundrelGame" at the top level (like "/mnt/sdcard/ScoundrelGame/SCOUNDREL" and "/mnt/sdcard/ScoundrelGame/assets"). Then copy the file "scripts/Scoundrel.sh" into "Roms/PORTS/Scoundrel.sh".
 
+```
+tar -xzvf ScoundrelGame.tar.gz
+```
+
 NOTE: Don't put the ScoundrelGame folder in the Roms/PORTS directory, this will cause it to not work, even if you edit the sh file to point to it. For whatever reason, homebrew doesn't work from there (at least when using Spruce). This caused me much frustration.
 
 You can add a Scoundrel.png image of the game in the Roms/PORTS/ image folder if you want an image for the game to appear when you hover it.
