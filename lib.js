@@ -479,7 +479,6 @@ function LIB() {
     };
 
     if (type == 'cancel') {
-      // button.style.backgroundColor = '#A93B3B';
       button.classList.add('cancel-button');
     }
 
@@ -663,7 +662,7 @@ var updateGamePad = gamepad => {
 var Lib = (thisWindow.Lib = new LIB());
 var queryString = thisWindow.location.search;
 var params = new URLSearchParams(queryString);
-var expand = false; //params.get('cabinet');
+var expand = false;
 var isArcadeCabinet = params.get('cabinet');
 var gamepadInterval;
 var captureGamePad = isArcadeCabinet ? false : true;
@@ -694,8 +693,6 @@ var Module = {
       if (isArcadeCabinet) {
         Lib.disableModuleControls();
       }
-      // This should be notified from inside the program itself
-      // Lib.notifyGameReady();
     },
   ],
   canvas: (function () {
@@ -712,7 +709,6 @@ var Module = {
         },
         false
       );
-      // const isArcadeCabinet = expand === 'true';
       if (isArcadeCabinet) {
         canvas.style.border = 'unset';
       }
@@ -869,7 +865,6 @@ if (!isArcadeCabinet) {
   if (startButton) startButton.style.display = 'none';
   window.addEventListener('load', () => {
     console.log('[Lib] loaded Lib', expand);
-    // Lib.toggleControls();
     Lib.setControls(true);
     Lib.toggleScale();
     const toggleScaleElem = document.getElementById('toggle-scale');
