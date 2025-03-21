@@ -6,9 +6,9 @@ The web version of this game is available here: https://benjamin-t-brown.github.
 
 Don't know how to play? Instructions (English) are here: https://benjamin-t-brown.github.io/scoundrel/instructions/instructions.en.html
 
-## ![image](https://github.com/user-attachments/assets/ba5bc38f-a0d4-4410-a22e-c1ce5bbc61f4)
+## ![Scoundrel](https://github.com/user-attachments/assets/12c2d665-9076-43c5-b340-688be0b0ca14)
 
-## ![image](https://github.com/user-attachments/assets/d33a161a-bbad-4bdf-992d-c63011a776cf)
+## ![Scoundrel](https://github.com/user-attachments/assets/597d5c45-8882-4183-872f-29cf870db5e5)
 
 Keyboard controls: arrow keys=move cursor, x=confirm, z=back
 
