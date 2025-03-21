@@ -4,10 +4,11 @@ The classic solitaire card game adventuring rogue-like.
 
 The web version of this game is available here: https://benjamin-t-brown.github.io/scoundrel/
 
-![image](https://github.com/user-attachments/assets/ba5bc38f-a0d4-4410-a22e-c1ce5bbc61f4)
--
-![image](https://github.com/user-attachments/assets/d33a161a-bbad-4bdf-992d-c63011a776cf)
--
+Don't know how to play? Instructions (English) are here: https://benjamin-t-brown.github.io/scoundrel/instructions/instructions.en.html
+
+## ![image](https://github.com/user-attachments/assets/ba5bc38f-a0d4-4410-a22e-c1ce5bbc61f4)
+
+## ![image](https://github.com/user-attachments/assets/d33a161a-bbad-4bdf-992d-c63011a776cf)
 
 Keyboard controls: arrow keys=move cursor, x=confirm, z=back
 Gamepad controls: dpad=move cursor, a=confirm, b=back
@@ -15,17 +16,20 @@ Gamepad controls: dpad=move cursor, a=confirm, b=back
 ## Development
 
 Development Requirements
-  - GCC/Clang
-  - SDL2
-  - SDL2_image
-  - SDL2_ttf
-  - SDL2_mixer
+
+- GCC/Clang
+- SDL2
+- SDL2_image
+- SDL2_ttf
+- SDL2_mixer
 
 For Building MiyooA30 Executable
-  - Docker
+
+- Docker
 
 For Building WASM Executable
-  - Emscripten
+
+- Emscripten
 
 This program is built with the Makefile in the src directory.
 
@@ -62,7 +66,7 @@ python3 -m pip install --upgrade pip
 
 ### Mingw64 (Windows)
 
-Development on Windows is done through MSYS2
+Development on Windows is done through MSYS2. Assuming you're using mingw64 (other distribs like ucrt or clang should work fine):
 
 ```
 pacman -S base-devel\
@@ -82,7 +86,7 @@ pacman -S mingw-w64-x86_64-clang\
 pacman -S mingw64/mingw-w64-x86_64-lld
 ```
 
-### Build SDL From Scratch
+### Build SDL2 From Scratch
 
 If you'd prefer to build SDL, this might be helpful to you.
 
@@ -102,7 +106,7 @@ sudo make install
 
 Use https://github.com/nickdiego/compiledb to generate the json file clangd needs to debug.
 
-Install with 
+Install with
 
 ```
 pip install compiledb
@@ -116,9 +120,12 @@ Then run
 ./compile-commands.sh
 ```
 
+This should allow vscode /w clangd or other programs to ingest the file for usage in development.
+
 ### Localization
 
-Localization files are generated with a python script.  These should be dropped into the src/assets folder automatically and wont automatically override previous strings.
+Localization files are generated with a python script. These should be dropped into the src/assets folder automatically and wont automatically override previous strings.
+
 ```
 python3 scripts/scan_locstr.py --languages la en
 ```
@@ -127,11 +134,12 @@ The localization doesn't work for the MiyooA30 because the json library that the
 
 ### MiyooA30
 
-This repo contains a toolchain for building to the MiyooA30 handheld.  This was based off the article that can be found here: https://www.hydrogen18.com/blog/compiling-for-the-miyoo-a30-sdl2.html which has an associated repo here: https://codeberg.org/hydrogen18/miyooa30.  That repo is included in this repo as an example under the miyooa30-toolchain folder.
+This repo contains a toolchain for building to the MiyooA30 handheld. This was based off the article that can be found here: https://www.hydrogen18.com/blog/compiling-for-the-miyoo-a30-sdl2.html which has an associated repo here: https://codeberg.org/hydrogen18/miyooa30. That repo is included in this repo as an example under the miyooa30-toolchain folder.
 
-This is all assuming you're running Spruce on your MiyooA30.  It should probably work without that, but it hasn't been tested under any other launchers.
+This is all assuming you're running Spruce on your MiyooA30. It should probably work without that, but it hasn't been tested under any other launchers.
 
-Setup the toolchain by building the docker container.  Make sure you have docker installed and can run docker commands.
+Setup the toolchain by building the docker container. Make sure you have docker installed and can run docker commands.
+
 ```
 # Build the toolchain docker container.  This should create a dist folder with executable and assets.
 ./setup-miyooa30-toolchain.sh
@@ -147,8 +155,8 @@ docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src 
 docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src --entrypoint bash miyooa30-toolchain
 ```
 
-To get this running on a MiyooA30, copy the contents of the src/dist folder onto the sdcard.  This would be the binary and assets folder into a folder called "ScoundrelGame" at the top level (like "/mnt/sdcard/ScoundrelGame/SCOUNDREL" and "/mnt/sdcard/ScoundrelGame/assets").  Then copy the file "scripts/Scoundrel.sh" into "Roms/PORTS/Scoundrel.sh".
+To get this running on a MiyooA30, copy the contents of the src/dist folder onto the sdcard. This would be the binary and assets folder into a folder called "ScoundrelGame" at the top level (like "/mnt/sdcard/ScoundrelGame/SCOUNDREL" and "/mnt/sdcard/ScoundrelGame/assets"). Then copy the file "scripts/Scoundrel.sh" into "Roms/PORTS/Scoundrel.sh".
 
-NOTE: Don't put the ScoundrelGame folder in the Roms/PORTS directory, this will cause it to not work, even if you edit the sh file to point to it.  For whatever reason, homebrew doesn't work from there (at least when using Spruce).  This caused me much frustration.
+NOTE: Don't put the ScoundrelGame folder in the Roms/PORTS directory, this will cause it to not work, even if you edit the sh file to point to it. For whatever reason, homebrew doesn't work from there (at least when using Spruce). This caused me much frustration.
 
 You can add a Scoundrel.png image of the game in the Roms/PORTS/ image folder if you want an image for the game to appear when you hover it.
