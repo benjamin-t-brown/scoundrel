@@ -8,11 +8,11 @@ namespace scoundrel {
 
 class GameManager {
   State state;
-  SDL2Wrapper::Window& window;
+  sdl2w::Window& window;
   Render r;
 
 public:
-  GameManager(SDL2Wrapper::Window& windowA);
+  GameManager(sdl2w::Window& windowA);
   ~GameManager();
 
   void load();

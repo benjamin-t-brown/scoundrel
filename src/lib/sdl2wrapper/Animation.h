@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 class AnimationDefinition;
 
 struct AnimSprite {
@@ -46,4 +46,4 @@ public:
   AnimationDefinition(const std::string& nameA, const bool loopA);
   ~AnimationDefinition();
 };
-} // namespace SDL2Wrapper
+} // namespace sdl2w

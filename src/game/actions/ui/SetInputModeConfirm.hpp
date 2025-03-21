@@ -14,14 +14,14 @@ protected:
   std::string getMessage() {
     switch (type) {
     case CONFIRM_HEAL:
-      return SDL2Wrapper::Localization::trans(LOCSTR("Use this card to heal?"));
+      return sdl2w::L10n::trans(LOCSTR("Use this card to heal?"));
     case CONFIRM_FLEE:
-      return SDL2Wrapper::Localization::trans(
+      return sdl2w::L10n::trans(
           LOCSTR("Are you sure you wish to flee?"));
     case CONFIRM_CHOOSE_WEAPON:
-      return SDL2Wrapper::Localization::trans(LOCSTR("Pick up this weapon?"));
+      return sdl2w::L10n::trans(LOCSTR("Pick up this weapon?"));
     case PICK_WEAPON_TO_ATTACK_WITH:
-      return SDL2Wrapper::Localization::trans(
+      return sdl2w::L10n::trans(
           LOCSTR("Attack with which weapon?"));
     default:
       return "";
@@ -51,7 +51,7 @@ protected:
           stateRef.ui.cursorInds.confirm = 1;
           stateRef.ui.confirmData.leftDisabled = true;
           stateRef.ui.confirmData.leftHelpText =
-              SDL2Wrapper::Localization::trans(LOCSTR("You must attack a weaker monster with this weapon."));
+              sdl2w::L10n::trans(LOCSTR("You must attack a weaker monster with this weapon."));
         }
         transform::moveTo(
             stateRef.currentWeapon.value().pos,
@@ -70,12 +70,12 @@ protected:
       } else {
         stateRef.ui.cursorInds.confirm = 1;
         stateRef.ui.confirmData.leftHelpText =
-            SDL2Wrapper::Localization::trans(LOCSTR("You have no weapon."));
+            sdl2w::L10n::trans(LOCSTR("You have no weapon."));
         stateRef.ui.confirmData.leftDisabled = true;
       }
     } else if (type == CONFIRM_CHOOSE_WEAPON) {
       if (stateRef.currentWeapon.has_value()) {
-        stateRef.ui.confirmData.leftHelpText = SDL2Wrapper::Localization::trans(
+        stateRef.ui.confirmData.leftHelpText = sdl2w::L10n::trans(
             LOCSTR("This will replace your current weapon."));
       }
     }

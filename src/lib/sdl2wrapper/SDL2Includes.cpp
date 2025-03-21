@@ -12,7 +12,7 @@
 #include <SDL2/SDL_ttf.h>
 #endif
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 void SDL_Deleter::operator()(SDL_Window* p) const {
   if (p != nullptr)
     SDL_DestroyWindow(p);
@@ -42,4 +42,4 @@ void SDL_Deleter::operator()(SDL_Joystick* p) const {
   // if (p != nullptr && p != NULL)
   //   SDL_JoystickClose(p);
 }
-} // namespace SDL2Wrapper
+} // namespace sdl2w

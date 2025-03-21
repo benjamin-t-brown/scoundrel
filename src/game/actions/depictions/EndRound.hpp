@@ -1,12 +1,12 @@
 #pragma once
+
 #include "LibHTML.h"
 #include "game/Dispatch.h"
-#include "game/state.h"
 #include "game/actions/AbstractAction.h"
 #include "game/actions/depictions/DrawCardsForNewRoom.hpp"
 #include "game/actions/ui/SetInputModeEndGameScreen.hpp"
 #include "game/actions/ui/SetInputModeRoom.hpp"
-#include "logger.h"
+#include "game/state.h"
 
 namespace scoundrel {
 namespace actions {
@@ -20,7 +20,6 @@ protected:
 
     if (stateRef.playerHealth <= 0) {
       // defeat
-      logger::info("Defeated");
       libhtml::notifyGameCompleted(false);
       DISPATCH_ACTION(SetInputModeEndGameScreen, false);
       return;
@@ -28,7 +27,6 @@ protected:
 
     if (stateRef.room.size() <= 1 && stateRef.stack.size() == 0) {
       // victory!
-      logger::info("Victory!");
       libhtml::notifyGameCompleted(true);
       DISPATCH_ACTION(SetInputModeEndGameScreen, true);
       return;

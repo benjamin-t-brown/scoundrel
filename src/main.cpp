@@ -1,12 +1,15 @@
 #include "game/GameManager.h"
 #include "game/state.h"
 #include "lib/sdl2wrapper/Localization.h"
+#include "lib/sdl2wrapper/Logger.h"
 #include "lib/sdl2wrapper/Store.h"
 #include "lib/sdl2wrapper/Window.h"
-#include "logger.h"
 
-void renderLoadingScreen(SDL2Wrapper::Window& window) {
-  const std::string text = SDL2Wrapper::Localization::trans(LOCSTR("Loading"));
+using sdl2w::Logger;
+using sdl2w::LogType;
+
+void renderLoadingScreen(sdl2w::Window& window) {
+  const std::string text = sdl2w::L10n::trans(LOCSTR("Loadingg"));
   auto windowWidth = window.renderWidth;
   auto windowHeight = window.renderHeight;
   const float x = (windowWidth / 2.f);
@@ -15,14 +18,18 @@ void renderLoadingScreen(SDL2Wrapper::Window& window) {
 }
 
 int main() {
-  logger::info("Start program");
+#ifndef __EMSCRIPTEN__
+  Logger::setLogToFile(true);
+#endif
+
+  Logger().get(LogType::INFO) << "Start program" << Logger::endl;
   srand(time(NULL));
   try {
-    SDL2Wrapper::Window window(
+    sdl2w::Window window(
         "Scoundrel", scoundrel::WINDOW_WIDTH, scoundrel::WINDOW_HEIGHT, 25, 50);
     window.setBackgroundColor({0, 0, 0});
 
-    SDL2Wrapper::Store::createFont("default", "assets/monofonto.ttf");
+    sdl2w::Store::createFont("default", "assets/monofonto.ttf");
     window.setCurrentFont("default", 18);
 
 #ifdef __EMSCRIPTEN__
@@ -42,17 +49,21 @@ int main() {
     scoundrel::GameManager game(window);
     game.load();
 
-    // SDL2Wrapper::Store::logSprites();
+    // sdl2w::Store::logSprites();
 
     auto& events = window.getEvents();
     events.setKeyboardEvent(
         "keypress", [&](const std::string& key) { game.handleKeyPress(key); });
 
-    logger::info("Start loop");
+    Logger().get(LogType::INFO) << "Start loop" << Logger::endl;
     game.start();
     window.startRenderLoop([&]() {
       window.setBackgroundColor({10, 10, 10});
       window.setCurrentFont("default", 18);
+
+      if (events.isKeyPressed("Escape")) {
+        return false;
+      }
 
       game.update(std::min(window.getDeltaTimeMs(), 100));
       game.render();
@@ -63,5 +74,5 @@ int main() {
     Logger().get(LogType::ERROR) << e << Logger::endl;
   }
 
-  logger::info("End program");
+  Logger().get(LogType::INFO) << "End program" << Logger::endl;
 }

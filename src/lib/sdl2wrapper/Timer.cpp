@@ -2,7 +2,7 @@
 #include "Logger.h"
 #include "Window.h"
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 Timer::Timer(int maxTimeMs) : removeFlag(false), aggTime(0.0) {
   maxTime = static_cast<double>(maxTimeMs);
 }
@@ -51,4 +51,4 @@ void BoolTimer::remove() {
   Timer::remove();
 }
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

@@ -3,7 +3,7 @@
 #include "Timer.h"
 #include <string>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 enum Ease { LINEAR, EASE_OUT };
 
@@ -69,4 +69,4 @@ public:
   void update(double dt);
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

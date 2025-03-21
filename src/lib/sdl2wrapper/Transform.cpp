@@ -1,7 +1,7 @@
 #include "Transform.h"
 #include "Logger.h"
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 double Transform::easeOut(double t, double b, double c, double d) {
   auto t2 = t / d;
@@ -132,4 +132,4 @@ Transform Transform::createInverse() const {
 void Transform::start() { timer.restart(); }
 void Transform::update(double dt) { timer.update(dt); }
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

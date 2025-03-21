@@ -10,3 +10,7 @@ workspace/
 *.exe
 *.wasm
 compile_commands.json
+output.log
+*.zip
+*.tar.gz
+*.ini

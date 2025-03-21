@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 class Store {
   static unsigned int numSoundChunks;
@@ -71,4 +71,4 @@ public:
   static void clear();
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

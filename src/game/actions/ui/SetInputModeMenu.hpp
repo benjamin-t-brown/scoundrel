@@ -15,8 +15,8 @@ protected:
     stateRef.ui.inputMode = MENU;
     stateRef.ui.actionPreviewData.visible = false;
     stateRef.ui.titleMessage =
-        SDL2Wrapper::Localization::trans(LOCSTR("Scoundrel"));
-    stateRef.ui.instructionMessage = SDL2Wrapper::Localization::trans(
+        sdl2w::L10n::trans(LOCSTR("Scoundrel"));
+    stateRef.ui.instructionMessage = sdl2w::L10n::trans(
         LOCSTR("Press any button."));
   }
 };

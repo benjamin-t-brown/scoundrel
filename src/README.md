@@ -14,7 +14,7 @@ This project was primarily developed on Windows.  It should work on other system
 Requires MSYS2, (MINGW64 or UCRT64).  For Mingw use the following:
 
 ```
-pacman -S base-devel vim cmake git
+pacman -S base-devel vim cmake git msys/zip
 pacman -S mingw64/mingw-w64-x86_64-gcc mingw64/mingw-w64-x86_64-gdb
 pacman -S mingw64/mingw-w64-x86_64-SDL2 mingw64/mingw-w64-x86_64-SDL2_image mingw64/mingw-w64-x86_64-SDL2_mixer mingw64/mingw-w64-x86_64-SDL2_ttf
 # For some reason this isn't common knowledge (on google)? but the lld linker is insanely

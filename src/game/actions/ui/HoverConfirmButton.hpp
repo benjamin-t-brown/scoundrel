@@ -3,7 +3,6 @@
 #include "game/state.h"
 #include "game/actions/AbstractAction.h"
 #include "game/calculations.hpp"
-#include "logger.h"
 #include <utility>
 
 namespace scoundrel {

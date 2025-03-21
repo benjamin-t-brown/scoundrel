@@ -1,6 +1,6 @@
 #include "Render.h"
-#include "game/state.h"
 #include "game/calculations.hpp"
+#include "game/state.h"
 #include "game/utils/transform.hpp"
 #include "lib/sdl2wrapper/Localization.h"
 #include "lib/sdl2wrapper/SDL2Includes.h"
@@ -11,7 +11,7 @@ namespace scoundrel {
 
 double Render::cardScale = 3.;
 
-Render::Render(SDL2Wrapper::Window& windowA) : window(windowA) {}
+Render::Render(sdl2w::Window& windowA) : window(windowA) {}
 
 int Render::cardValueToSpriteIndex(int value) { return 14 - value; }
 
@@ -142,7 +142,7 @@ void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
                       true,
                       0,
                       {CARD_SCALE, CARD_SCALE});
-    window.drawTextCentered(SDL2Wrapper::Localization::trans(LOCSTR("Yes")),
+    window.drawTextCentered(sdl2w::L10n::trans(LOCSTR("Yes")),
                             CONFIRM_LEFT_POS.first,
                             CONFIRM_LEFT_POS.second,
                             {255, 255, 255});
@@ -152,7 +152,7 @@ void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
                       true,
                       0,
                       {CARD_SCALE, CARD_SCALE});
-    window.drawTextCentered(SDL2Wrapper::Localization::trans(LOCSTR("No")),
+    window.drawTextCentered(sdl2w::L10n::trans(LOCSTR("No")),
                             CONFIRM_RIGHT_POS.first,
                             CONFIRM_RIGHT_POS.second,
                             {255, 255, 255});
@@ -185,7 +185,7 @@ void Render::renderFleeUi(bool isDisabled) {
                     true,
                     0,
                     {CARD_SCALE, CARD_SCALE});
-  window.drawTextCentered(SDL2Wrapper::Localization::trans(LOCSTR("Flee")),
+  window.drawTextCentered(sdl2w::L10n::trans(LOCSTR("Flee")),
                           FLEE_UI_POS.first,
                           FLEE_UI_POS.second,
                           {255, 255, 255});

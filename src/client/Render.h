@@ -3,21 +3,21 @@
 #include "game/state.h"
 #include <string>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 class Window;
 }
 
 namespace scoundrel {
 
 class Render {
-  SDL2Wrapper::Window& window;
+  sdl2w::Window& window;
   static double cardScale;
 
   int cardValueToSpriteIndex(int value);
   std::string cardSuitToName(Suit suit);
 
 public:
-  Render(SDL2Wrapper::Window& windowA);
+  Render(sdl2w::Window& windowA);
 
   void renderCard(const VisualCard& vCard);
   void renderWeaponCard(const VisualCard& vCard,

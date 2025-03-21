@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 class Window;
 
@@ -18,4 +18,4 @@ public:
   void fill(double dt);
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

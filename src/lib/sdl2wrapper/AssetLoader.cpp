@@ -15,7 +15,7 @@
 #define PREFIX std::string("")
 #endif
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 std::string slice(const std::string& str, int a, int b) {
   if (a == b) {
     return std::string("");
@@ -278,4 +278,15 @@ void loadAssetsFromFile(const std::string& type, const std::string& path) {
     loadSoundAssetsFromFile(path);
   }
 }
-} // namespace SDL2Wrapper
+
+std::string loadFileAsString(const std::string& path) {
+  Logger().get(DEBUG) << "Loading file " << (PREFIX + path) << Logger::endl;
+  std::ifstream file(PREFIX + path);
+  if (!file) {
+    throw std::runtime_error("Error opening file: " + path);
+  }
+  std::stringstream buffer;
+  buffer << file.rdbuf();
+  return buffer.str();
+}
+} // namespace sdl2w

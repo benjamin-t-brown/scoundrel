@@ -8,7 +8,7 @@
 #include <SDL2/SDL_mouse.h>
 #endif
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 auto SDL2WRAPPER_EVENTS_NO_EVENT = [](SDL_Event e) {};
 
@@ -77,7 +77,7 @@ void Events::setMouseEvent(const std::string& name,
   } else if (name == "mouseup") {
     route->onmouseup = cb;
   } else {
-    Logger().get(WARN) << "[SDL2Wrapper] WARNING Cannot set mouse event named: "
+    Logger().get(WARN) << "[sdl2w] WARNING Cannot set mouse event named: "
                        << name << Logger::endl;
   }
 }
@@ -92,7 +92,7 @@ void Events::setKeyboardEvent(const std::string& name,
     route->onkeypress = cb;
   } else {
     Logger().get(WARN)
-        << "[SDL2Wrapper] WARNING Cannot set keyboard event named: " << name
+        << "[sdl2w] WARNING Cannot set keyboard event named: " << name
         << Logger::endl;
   }
 }
@@ -160,4 +160,4 @@ void Events::update() {
     popRoute();
   }
 }
-} // namespace SDL2Wrapper
+} // namespace sdl2w

@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 class Timer {
 
 protected:
@@ -38,4 +38,4 @@ public:
   void remove() override;
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

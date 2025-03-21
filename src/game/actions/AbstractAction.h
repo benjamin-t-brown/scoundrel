@@ -1,6 +1,6 @@
 #pragma once
 
-#include "logger.h"
+#include "lib/sdl2wrapper/Logger.h"
 #ifdef __GNUG__
 #include <cxxabi.h>
 #endif
@@ -14,7 +14,9 @@ class AbstractAction {
 protected:
   State* state = nullptr;
 
-  virtual void act() { logger::warn("AbstractAction::act() called noop"); };
+  virtual void act() {
+    sdl2w::Logger().get(sdl2w::WARN) << "AbstractAction::act() called noop";
+  };
 
 public:
   virtual std::string getName() const {

@@ -16,7 +16,7 @@
 #include "lib/sdl2wrapper/Window.h"
 
 namespace scoundrel {
-GameManager::GameManager(SDL2Wrapper::Window& windowA)
+GameManager::GameManager(sdl2w::Window& windowA)
     : window(windowA), r(Render(windowA)) {
   Dispatch::init(&state);
 }
@@ -24,8 +24,8 @@ GameManager::GameManager(SDL2Wrapper::Window& windowA)
 GameManager::~GameManager() {}
 
 void GameManager::load() {
-  SDL2Wrapper::loadAssetsFromFile("sprite", "assets/resSprites.txt");
-  SDL2Wrapper::loadAssetsFromFile("sound", "assets/resSounds.txt");
+  sdl2w::loadAssetsFromFile("sprite", "assets/resSprites.txt");
+  sdl2w::loadAssetsFromFile("sound", "assets/resSounds.txt");
 }
 
 void GameManager::start() {

@@ -18,7 +18,7 @@ struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Color;
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 struct Color {
   uint8_t r;
@@ -55,7 +55,7 @@ class Window {
   bool firstLoop = false;
   uint64_t lastFrameTime = 0;
   bool shouldRender = true;
-  std::deque<double> pastFrameRatios;
+  std::deque<double> pastFrameTimes;
   int deadZoneXDir = 0;
   int deadZoneYDir = 0;
   bool useIntermediateRenderTarget = false;
@@ -75,6 +75,7 @@ public:
   std::map<std::string, int> soundChannels;
   std::vector<std::pair<int, int>> externalEvents;
   std::pair<int, int> mousePos;
+  SDL_Color backgroundColor = {0, 0, 0, 255};
 
   static bool soundForcedDisabled;
   static uint64_t now;
@@ -111,10 +112,11 @@ public:
   static double getNow();
   double getDeltaTime() const;
   int getDeltaTimeMs() const;
-  double getFrameRatio() const;
+  double getAvgFrameTime() const;
+  int getAvgFps() const;
 
-  void setAnimationFromDefinition(const std::string& name,
-                                  Animation& anim) const;
+  static void setAnimationFromDefinition(const std::string& name,
+                                         Animation& anim);
 
   void disableSound();
   void enableSound();
@@ -164,4 +166,4 @@ public:
   void startTimedLoop(std::function<bool(void)> cb, int ms);
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

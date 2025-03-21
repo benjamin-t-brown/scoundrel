@@ -5,7 +5,7 @@
 
 #include "SDL2Includes.h"
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 struct Sprite {
 public:
@@ -23,4 +23,4 @@ public:
          SDL_Texture* imageA);
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

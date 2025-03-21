@@ -8,7 +8,7 @@ struct Mix_Chunk;
 typedef struct _Mix_Music Mix_Music;
 typedef struct _SDL_Joystick SDL_Joystick;
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 struct SDL_Deleter {
   void operator()(SDL_Window* p) const;
   void operator()(SDL_Renderer* p) const;
@@ -18,4 +18,4 @@ struct SDL_Deleter {
   void operator()(Mix_Music* p) const;
   void operator()(SDL_Joystick* p) const;
 };
-} // namespace SDL2Wrapper
+} // namespace sdl2w

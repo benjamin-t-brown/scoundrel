@@ -17,9 +17,9 @@ protected:
     stateRef.isVictory = isVictory;
     stateRef.ui.titleMessage =
         isVictory
-            ? SDL2Wrapper::Localization::trans(LOCSTR("You win!"))
-            : SDL2Wrapper::Localization::trans(LOCSTR("You are defeated."));
-    stateRef.ui.instructionMessage = SDL2Wrapper::Localization::trans(
+            ? sdl2w::L10n::trans(LOCSTR("You win!"))
+            : sdl2w::L10n::trans(LOCSTR("You are defeated."));
+    stateRef.ui.instructionMessage = sdl2w::L10n::trans(
         LOCSTR("Press any button to continue."));
     if (isVictory) {
       stateRef.ui.soundsToPlay.push_back("victory");

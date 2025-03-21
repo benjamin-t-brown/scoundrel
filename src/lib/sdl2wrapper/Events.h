@@ -8,7 +8,7 @@
 
 union SDL_Event;
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 class Window;
 class EventRoute {
@@ -70,4 +70,4 @@ public:
 
   void update();
 };
-} // namespace SDL2Wrapper
+} // namespace sdl2w

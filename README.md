@@ -9,7 +9,8 @@ The web version of this game is available here: https://benjamin-t-brown.github.
 ![image](https://github.com/user-attachments/assets/d33a161a-bbad-4bdf-992d-c63011a776cf)
 -
 
-Keyboard controls: arrow keys=move, x=confirm, z=back 
+Keyboard controls: arrow keys=move cursor, x=confirm, z=back
+Gamepad controls: dpad=move cursor, a=confirm, b=back
 
 ## Development
 
@@ -115,25 +116,39 @@ Then run
 ./compile-commands.sh
 ```
 
+### Localization
+
+Localization files are generated with a python script.  These should be dropped into the src/assets folder automatically and wont automatically override previous strings.
+```
+python3 scripts/scan_locstr.py --languages la en
+```
+
+The localization doesn't work for the MiyooA30 because the json library that the sdl 2 wrapper uses is not supported by the version of gcc on the distro.
+
 ### MiyooA30
 
-This repo contains a toolchain for building to the MiyooA30 handheld.  This was based off the article that can be found here: https://www.hydrogen18.com/blog/compiling-for-the-miyoo-a30-sdl2.html which has an associated repo here: https://codeberg.org/hydrogen18/miyooa30
+This repo contains a toolchain for building to the MiyooA30 handheld.  This was based off the article that can be found here: https://www.hydrogen18.com/blog/compiling-for-the-miyoo-a30-sdl2.html which has an associated repo here: https://codeberg.org/hydrogen18/miyooa30.  That repo is included in this repo as an example under the miyooa30-toolchain folder.
+
+This is all assuming you're running Spruce on your MiyooA30.  It should probably work without that, but it hasn't been tested under any other launchers.
 
 Setup the toolchain by building the docker container.  Make sure you have docker installed and can run docker commands.
 ```
 # Build the toolchain docker container.  This should create a dist folder with executable and assets.
 ./setup-miyooa30-toolchain.sh
 
-# Run the build command (linux/mac command, use script for MSYS2)
+# Run the build command
+# for msys2 you can run this helper script
+cd scripts && ./miyooa30-build.sh
+
+# for mac/linux run this command (this wont create a tarfile for you, you'll have to do that yourself)
 docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src miyooa30-toolchain bash -c "cd /workspace/src && source ~/config.sh && make miyooa30"
 
 # If you want to debug the container, you can get a shell with this (linux/mac command, use script for MSYS2)
 docker run --rm -it --mount type=bind,source="$(pwd)/src",target=/workspace/src --entrypoint bash miyooa30-toolchain
 ```
 
-### Localization
+To get this running on a MiyooA30, copy the contents of the src/dist folder onto the sdcard.  This would be the binary and assets folder into a folder called "ScoundrelGame" at the top level (like "/mnt/sdcard/ScoundrelGame/SCOUNDREL" and "/mnt/sdcard/ScoundrelGame/assets").  Then copy the file "scripts/Scoundrel.sh" into "Roms/PORTS/Scoundrel.sh".
 
-Localization files are generated with a python script.  These should be dropped into the src/assets folder automatically.
-```
-python3 scripts/scan_locstr.py --languages la en
-```
+NOTE: Don't put the ScoundrelGame folder in the Roms/PORTS directory, this will cause it to not work, even if you edit the sh file to point to it.  For whatever reason, homebrew doesn't work from there (at least when using Spruce).  This caused me much frustration.
+
+You can add a Scoundrel.png image of the game in the Roms/PORTS/ image folder if you want an image for the game to appear when you hover it.

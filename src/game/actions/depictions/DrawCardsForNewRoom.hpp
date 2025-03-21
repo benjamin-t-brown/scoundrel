@@ -1,7 +1,7 @@
 #pragma once
-#include "game/state.h"
 #include "game/actions/AbstractAction.h"
-#include "logger.h"
+#include "game/state.h"
+#include "lib/sdl2wrapper/Logger.h"
 
 namespace scoundrel {
 namespace actions {
@@ -23,7 +23,8 @@ protected:
     }
 
     if (numCardsRemaining <= 0) {
-      logger::error("Cannot draw any more cards.  Deck is insufficient.");
+      sdl2w::Logger().get(sdl2w::LogType::ERROR)
+          << "Dispatch::init window is nullptr" << sdl2w::Logger::endl;
       return;
     }
 

@@ -1,6 +1,6 @@
 #include "Gauge.h"
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 Gauge::Gauge(int maxTimeMs)
     : aggTime(0.0), maxTime(static_cast<double>(maxTimeMs)) {}
@@ -22,4 +22,4 @@ void Gauge::fill(double dt) {
 }
 void Gauge::empty() { aggTime = 0; }
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

@@ -3,7 +3,7 @@
 #include "Store.h"
 #include "Window.h"
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 Animation::Animation()
     : name(""),
@@ -129,4 +129,4 @@ AnimationDefinition::AnimationDefinition(const std::string& nameA,
     : Animation(nameA, loopA) {}
 AnimationDefinition::~AnimationDefinition() {}
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

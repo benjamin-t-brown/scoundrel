@@ -2,6 +2,7 @@
 
 #include <string>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 void loadAssetsFromFile(const std::string& type, const std::string& path);
-} // namespace SDL2Wrapper
+std::string loadFileAsString(const std::string& path);
+} // namespace sdl2w

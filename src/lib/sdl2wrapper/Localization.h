@@ -7,48 +7,46 @@ generate the keys.
 
 You would use this as so:
 
-drawText(Localization::trans(LOCSTR(HelloWorld)), 0, 0);
+drawText(L10n::trans(LOCSTR("HelloWorld")), 0, 0);
 **/
 
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
-#define FNV_PRIME_32 16777619u
-#define FNV_OFFSET_32 2166136261u
-
-#ifdef SDL2WRAPPER_ENABLE_LOCALIZATION
-#define LOCSTR(token) hash(#token)
-#else
-#define LOCSTR(token) token
-#endif
-
-// Thanks CoPilot
-// https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-constexpr int hash(const char* data) {
-  uint32_t hash = FNV_OFFSET_32;
-  while (*data) {
-    hash ^= static_cast<uint32_t>(*data++);
-    hash *= FNV_PRIME_32;
-  }
-  return hash;
+inline size_t hash(const std::string& str) {
+  std::hash<std::string> hasher;
+  return hasher(str);
 }
 
-class Localization {
+#ifdef SDL2WRAPPER_ENABLE_LOCALIZATION
+#define LOCSTR(token) sdl2w::hash(token)
+#define LOCSTR_TYPE size_t
+#define L10N_STATUS "enabled"
+#else
+#define LOCSTR(token) token
+#define LOCSTR_TYPE std::string
+#define L10N_STATUS "disabled"
+#endif
+
+class L10n {
   static std::string language;
-  static std::unordered_map<int, std::string> locStrings;
+  static std::unordered_map<std::string,
+                            std::unordered_map<LOCSTR_TYPE, std::string>>
+      locStrings;
+  static std::vector<std::string> supportedLanguages;
 
 public:
   static void init();
-  static std::string trans(int id);
-
-  // used for accommodating SDL2WRAPPER_ENABLE_LOCALIZATION enabled/disabled
-  static std::string trans(const std::string& str);
-  static std::string trans(const char* str);
+  static void loadLanguage(const std::string& lang,
+                           const std::string& langFile);
+  static void setLanguage(const std::string& lang);
+  static const std::unordered_map<LOCSTR_TYPE, std::string>& getStrings();
+  static std::string trans(const LOCSTR_TYPE& id);
 };
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

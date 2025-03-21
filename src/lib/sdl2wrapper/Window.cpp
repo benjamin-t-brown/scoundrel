@@ -1,8 +1,7 @@
 #include "Window.h"
 #include "Logger.h"
 #include "Store.h"
-#include <SDL2/SDL_video.h>
-#include <algorithm>
+
 #include <math.h>
 #include <sstream>
 #include <stdio.h>
@@ -13,11 +12,13 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
+#include <SDL_video.h>
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_video.h>
 #endif
 
 // #define __EMSCRIPTEN__ 1
@@ -29,60 +30,57 @@
 extern "C" {
 EMSCRIPTEN_KEEPALIVE
 void enableSound() {
-  SDL2Wrapper::Window::soundEnabled = true;
-  int volumePct = SDL2Wrapper::Window::soundPercent;
+  sdl2w::Window::soundEnabled = true;
+  int volumePct = sdl2w::Window::soundPercent;
   Mix_VolumeMusic((double(volumePct) / 100.0) * double(MIX_MAX_VOLUME));
   Mix_Volume(-1, (double(volumePct) / 100.0) * double(MIX_MAX_VOLUME));
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
-      << "Enable sound" << SDL2Wrapper::Logger::endl;
+  sdl2w::Logger().get(sdl2w::DEBUG) << "Enable sound" << sdl2w::Logger::endl;
 }
 EMSCRIPTEN_KEEPALIVE
 void disableSound() {
-  SDL2Wrapper::Window::soundEnabled = false;
+  sdl2w::Window::soundEnabled = false;
 
   Mix_VolumeMusic(0);
   Mix_Volume(-1, 0);
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
-      << "Disable sound" << SDL2Wrapper::Logger::endl;
+  sdl2w::Logger().get(sdl2w::DEBUG) << "Disable sound" << sdl2w::Logger::endl;
 }
 EMSCRIPTEN_KEEPALIVE
 void setVolume(int volumePct) {
-  SDL2Wrapper::Window& window = SDL2Wrapper::Window::getGlobalWindow();
+  sdl2w::Window& window = sdl2w::Window::getGlobalWindow();
   window.setVolume(double(volumePct));
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
-      << "Set volume:" << volumePct << "%" << SDL2Wrapper::Logger::endl;
+  sdl2w::Logger().get(sdl2w::DEBUG)
+      << "Set volume:" << volumePct << "%" << sdl2w::Logger::endl;
 }
 EMSCRIPTEN_KEEPALIVE
 void setKeyDown(int key) {
-  SDL2Wrapper::Window& window = SDL2Wrapper::Window::getGlobalWindow();
-  SDL2Wrapper::Events& events = window.getEvents();
+  sdl2w::Window& window = sdl2w::Window::getGlobalWindow();
+  sdl2w::Events& events = window.getEvents();
   events.keydown(key);
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
-      << "External set key down: " << key << SDL2Wrapper::Logger::endl;
+  sdl2w::Logger().get(sdl2w::DEBUG)
+      << "External set key down: " << key << sdl2w::Logger::endl;
 }
 EMSCRIPTEN_KEEPALIVE
 void setKeyUp(int key) {
-  SDL2Wrapper::Window& window = SDL2Wrapper::Window::getGlobalWindow();
-  SDL2Wrapper::Events& events = window.getEvents();
+  sdl2w::Window& window = sdl2w::Window::getGlobalWindow();
+  sdl2w::Events& events = window.getEvents();
   events.keyup(key);
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
-      << "External set key up: " << key << SDL2Wrapper::Logger::endl;
+  sdl2w::Logger().get(sdl2w::DEBUG)
+      << "External set key up: " << key << sdl2w::Logger::endl;
 }
 EMSCRIPTEN_KEEPALIVE
 void setKeyStatus(int status) {
-  SDL2Wrapper::Window& window = SDL2Wrapper::Window::getGlobalWindow();
+  sdl2w::Window& window = sdl2w::Window::getGlobalWindow();
   window.isInputEnabled = !!status;
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
+  sdl2w::Logger().get(sdl2w::DEBUG)
       << "External set key status: " << window.isInputEnabled
-      << SDL2Wrapper::Logger::endl;
+      << sdl2w::Logger::endl;
 }
 EMSCRIPTEN_KEEPALIVE
 void sendEvent(int event, int payload) {
-  SDL2Wrapper::Window& window = SDL2Wrapper::Window::getGlobalWindow();
+  sdl2w::Window& window = sdl2w::Window::getGlobalWindow();
   window.externalEvents.emplace_back(event, payload);
-  SDL2Wrapper::Logger().get(SDL2Wrapper::DEBUG)
-      << "External event received: " << event << ":" << payload
-      << SDL2Wrapper::Logger::endl;
+  sdl2w::Logger().get(sdl2w::DEBUG) << "External event received: " << event
+                                    << ":" << payload << sdl2w::Logger::endl;
 }
 }
 #endif
@@ -133,7 +131,7 @@ int sdlButtonToKeyboardButton(int btn) {
 }
 #endif
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 const std::string SDL2_WRAPPER_WINDOW_ERR = "SDL2_WRAPPER_WINDOW_ERR";
 
@@ -195,7 +193,7 @@ Window::Window(const std::string& title,
   soundEnabled = true;
   colorkey = 0x00FFFFFF;
   createWindow(title, widthA, heightA, windowPosX, windowPosY);
-  Logger().get(INFO) << "SDL2Wrapper Window initialized" << Logger::endl;
+  Logger().get(INFO) << "sdl2w Window initialized" << Logger::endl;
 }
 
 Window::~Window() {
@@ -207,7 +205,7 @@ Window::~Window() {
   if (intermediate != nullptr) {
     SDL_DestroyTexture(intermediate);
   }
-  Logger().get(INFO) << "SDL2Wrapper Window removed" << Logger::endl;
+  Logger().get(INFO) << "sdl2w Window removed" << Logger::endl;
 }
 
 void Window::disableStaticSound() {
@@ -222,8 +220,10 @@ void Window::createWindow(const std::string& title,
                           const int h,
                           const int xPos,
                           const int yPos) {
-  SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS |
-           SDL_INIT_GAMECONTROLLER);
+  // SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS |
+  //          SDL_INIT_GAMECONTROLLER);
+  SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO |
+           SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS);
   TTF_Init();
   colorkey = 0x00FFFFFF;
   width = w;
@@ -232,13 +232,13 @@ void Window::createWindow(const std::string& title,
   Logger().printf("[SDL] Init window\n");
 #ifdef MIYOOA30
   window = std::unique_ptr<SDL_Window, SDL_Deleter>(
-      SDL_CreateWindow(
-          title.c_str(),
-          SDL_WINDOWPOS_UNDEFINED,
-          SDL_WINDOWPOS_UNDEFINED,
-          height, // flipped intentionally, the screen is oriented vertically
-          width,
-          SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL),
+      SDL_CreateWindow(title.c_str(),
+                       SDL_WINDOWPOS_UNDEFINED,
+                       SDL_WINDOWPOS_UNDEFINED,
+                       width,
+                       height,
+                       SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN |
+                           SDL_WINDOW_OPENGL),
       SDL_Deleter());
 #else
   window = std::unique_ptr<SDL_Window, SDL_Deleter>(
@@ -253,12 +253,13 @@ void Window::createWindow(const std::string& title,
   }
   Logger().printf("[SDL] Init sound\n");
   if (!soundForcedDisabled) {
-    if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 1024) < 0) {
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 1, 2048) < 0) {
       Logger().get(ERROR) << "SDL_mixer could not initialize! "
                           << std::string(Mix_GetError()) << Logger::endl;
       soundForcedDisabled = true;
       Window::soundCanBeLoaded = false;
     }
+    Mix_AllocateChannels(16);
   } else {
     Logger().printf("Warning: Sound forced disabled!\n");
   }
@@ -290,10 +291,9 @@ void Window::createWindow(const std::string& title,
   renderer = std::unique_ptr<SDL_Renderer, SDL_Deleter>(
       SDL_CreateRenderer(window.get(),
                          -1,
-                         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC |
-                             SDL_RENDERER_TARGETTEXTURE),
+                         SDL_RENDERER_ACCELERATED),
       SDL_Deleter());
-  SDL_RenderSetScale(renderer, 1.0, width / height);
+  SDL_RenderSetScale(renderer.get(), 1.0, (float)width / (float)height);
   useIntermediateRenderTarget = true;
   renderRotationAngle = -90.0;
 #else
@@ -328,6 +328,7 @@ SDL_Renderer* Window::getRenderer() { return renderer.get(); }
 SDL_Window* Window::getSDLWindow() { return window.get(); }
 
 void Window::setBackgroundColor(const SDL_Color& color) {
+  backgroundColor = color;
   SDL_SetRenderDrawColor(renderer.get(), color.r, color.g, color.b, color.a);
 }
 
@@ -345,15 +346,23 @@ double Window::getNow() {
 }
 double Window::getDeltaTime() const { return deltaTime; }
 int Window::getDeltaTimeMs() const { return static_cast<int>(deltaTime); }
-double Window::getFrameRatio() const {
+double Window::getAvgFrameTime() const {
   double sum = 0;
-  for (const double r : pastFrameRatios) {
+  for (const double r : pastFrameTimes) {
     sum += r;
   }
-  return sum / static_cast<double>(pastFrameRatios.size());
+  return sum / static_cast<double>(pastFrameTimes.size());
+}
+int Window::getAvgFps() const {
+  double sum = 0;
+  for (const double r : pastFrameTimes) {
+    sum += r;
+  }
+  return static_cast<int>(1000.0 /
+                          (sum / static_cast<double>(pastFrameTimes.size())));
 }
 void Window::setAnimationFromDefinition(const std::string& name,
-                                        Animation& anim) const {
+                                        Animation& anim) {
   auto& a = Store::getAnimationDefinition(name);
   anim.sprites.clear();
   for (const auto& spriteAnim : a.sprites) {
@@ -406,7 +415,7 @@ void Window::stopMusic() {
   }
 }
 void Window::setVolume(double volumePct) {
-  SDL2Wrapper::Window::soundPercent = volumePct;
+  sdl2w::Window::soundPercent = volumePct;
   Mix_VolumeMusic((double(volumePct) / 100.0) * double(MIX_MAX_VOLUME));
   Mix_Volume(-1, (double(volumePct) / 100.0) * double(MIX_MAX_VOLUME));
 }
@@ -456,7 +465,8 @@ Window::getStaticColorTexture(int width, int height, const SDL_Color& color) {
   SDL_RenderClear(renderer.get());
   SDL_SetRenderTarget(renderer.get(),
                       useIntermediateRenderTarget ? intermediate : nullptr);
-  SDL2Wrapper::Store::storeTexture(textureName, texture);
+  setBackgroundColor(backgroundColor);
+  sdl2w::Store::storeTexture(textureName, texture);
 
   return texture;
 }
@@ -470,7 +480,7 @@ SDL_Texture* Window::getStreamTexture(const std::string& id, int w, int h) {
                                    SDL_TEXTUREACCESS_STREAMING,
                                    w,
                                    h);
-  SDL2Wrapper::Store::storeTexture(id, texture);
+  sdl2w::Store::storeTexture(id, texture);
   return texture;
 }
 
@@ -534,7 +544,7 @@ void Window::drawSprite(const std::string& name,
 
   // HACK setting x scale to negative value will flip sprite
   // horizontally.
-  if (scale.first < 0) {
+  if (scale.first < 0.) {
     scaleLocal.first = abs(scale.first);
     flip = SDL_FLIP_HORIZONTAL;
   }
@@ -637,17 +647,16 @@ void Window::renderLoop() {
   if (firstLoop) {
     deltaTime = 16.6666;
     firstLoop = false;
-    pastFrameRatios.push_back(1.0);
+    pastFrameTimes.push_back(deltaTime);
   } else {
     deltaTime = static_cast<double>((nowMicroSeconds - lastFrameTime) * div) /
                 static_cast<double>(freq);
   }
 
   lastFrameTime = nowMicroSeconds;
-  const double d = deltaTime / Window::targetFrameMS;
-  pastFrameRatios.push_back(std::min(d, 2.0));
-  if (pastFrameRatios.size() > 10) {
-    pastFrameRatios.pop_front();
+  pastFrameTimes.push_back(deltaTime);
+  if (pastFrameTimes.size() > 10) {
+    pastFrameTimes.pop_front();
   }
 
   SDL_Event e;
@@ -838,17 +847,16 @@ void Window::timedLoop() {
   if (firstLoop) {
     deltaTime = 16.6666;
     firstLoop = false;
-    pastFrameRatios.push_back(1.0);
+    pastFrameTimes.push_back(deltaTime);
   } else {
     deltaTime = static_cast<double>((nowMicroSeconds - lastFrameTime) * div) /
                 static_cast<double>(freq);
   }
 
   lastFrameTime = nowMicroSeconds;
-  const double d = deltaTime / Window::targetFrameMS;
-  pastFrameRatios.push_back(std::min(d, 2.0));
-  if (pastFrameRatios.size() > 10) {
-    pastFrameRatios.pop_front();
+  pastFrameTimes.push_back(deltaTime);
+  if (pastFrameTimes.size() > 10) {
+    pastFrameTimes.pop_front();
   }
 
   isLooping = renderCb();
@@ -871,4 +879,4 @@ void Window::startTimedLoop(std::function<bool(void)> cb, int ms) {
   }
 }
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

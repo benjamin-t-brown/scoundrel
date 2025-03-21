@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include <regex>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -6,14 +7,22 @@
 #include "debugScreen.h"
 #endif
 
-namespace SDL2Wrapper {
+namespace sdl2w {
+
+static std::string removeANSIEscapeCodes(const std::string& str) {
+  static const std::regex ansiRegex("\x1B\\[[0-9;]*m");
+  return std::regex_replace(str, ansiRegex, "");
+}
 
 const std::string Logger::endl = std::string("\n");
 bool Logger::disabled = false;
 bool Logger::colorEnabled = true;
+bool Logger::logToFile = false;
+std::fstream Logger::logFile;
 
 std::ostringstream& Logger::get(LogType level) {
-  os << getLabel(level);
+  std::string label = getLabel(level);
+  os << label;
   return os;
 }
 std::string Logger::getLabel(LogType type) {
@@ -50,95 +59,21 @@ Logger::~Logger() {
   if (!Logger::disabled) {
     fprintf(stdout, "%s", os.str().c_str());
     fflush(stdout);
+    if (Logger::logToFile && Logger::logFile.is_open()) {
+      Logger::logFile << removeANSIEscapeCodes(os.str());
+      Logger::logFile.flush();
+    }
   }
 }
 
-// void Logger::printMessage(const std::string& msg) {
-//   if (Logger::disabled) {
-//     return;
-//   }
-
-//   printf("%s", msg.c_str());
-// }
-
-// // Logger operator<<(Logger& l, const std::string& msg) {
-// //   std::stringstream ss;
-// //   ss << msg;
-// //   l.printMessage(ss.str());
-// //   return l;
-// // }
-// // Logger operator<<(Logger& l, const char msg) {
-// //   std::stringstream ss;
-// //   ss << msg;
-// //   l.printMessage(ss.str());
-// //   return l;
-// // }
-// // Logger operator<<(Logger& l, const int msg) {
-// //   std::stringstream ss;
-// //   ss << msg;
-// //   l.printMessage(ss.str());
-// //   return l;
-// // }
-// // Logger operator<<(Logger& l, const double msg) {
-// //   std::stringstream ss;
-// //   ss << msg;
-// //   l.printMessage(ss.str());
-// //   return l;
-// // }
-
-// void Logger::manipulateMessage(const StandardEndLine m) {
-//   if (Logger::disabled) {
-//     return;
-//   }
-//   printf("\n");
-//   // Removing this to get rid of iostream
-//   // #ifdef __vita__
-//   //   printf("\n");
-//   // #else
-//   //   m(std::cout);
-//   // #endif
-// }
-
-// // template <class T> Logger operator<<(Logger& l, const T& msg) {
-// //   // clang-tidy bug? It keeps saying this can be const, but obviously it
-// //   can't
-// //   // NOLINTNEXTLINE(misc-const-correctness)
-// //   std::stringstream ss;
-// //   ss << msg;
-// //   l.printMessage(ss.str());
-// //   return l;
-// // }
-
-// std::string Logger::getLabel(LogType type) {
-//   std::string label;
-//   switch (type) {
-//   case DEBUG:
-//     label = "{DEBUG} ";
-//     if (Logger::colorEnabled) {
-//       label = "\033[36m" + label + "\033[0m";
-//     }
-//     break;
-//   case INFO:
-//     label = "{INFO} ";
-//     if (Logger::colorEnabled) {
-//       label = "\033[32m" + label + "\033[0m";
-//     }
-//     break;
-//   case WARN:
-//     label = "{WARN} ";
-//     if (Logger::colorEnabled) {
-//       label = "\033[33m" + label + "\033[0m";
-//     }
-//     break;
-//   case ERROR:
-//     label = "{ERROR} ";
-//     if (Logger::colorEnabled) {
-//       label = "\033[31m" + label + "\033[0m";
-//     }
-//     break;
-//   }
-//   return label;
-// }
+void Logger::setLogToFile(bool logToFileA) {
+  if (logToFileA) {
+    Logger::logFile.open("output.log", std::ios::out | std::ios::trunc);
+  } else if (!logToFileA && Logger::logFile.is_open()) {
+    Logger::logFile.close();
+  }
+  Logger::logToFile = logToFileA;
+}
 
 int Logger::printf(const char* c, ...) {
   if (Logger::disabled) {
@@ -176,4 +111,4 @@ int Logger::printf(const char* c, ...) {
   return 0;
 #endif
 }
-} // namespace SDL2Wrapper
+} // namespace sdl2w

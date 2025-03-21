@@ -15,7 +15,7 @@
 #include <SDL2/SDL_ttf.h>
 #endif
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 unsigned int Store::numSoundChunks = 2;
 SDL_Renderer* Store::rendererPtr = nullptr;
@@ -59,7 +59,7 @@ void Store::storeTextTexture(const std::string& name, SDL_Texture* tex) {
 
 void Store::createTexture(const std::string& name, const std::string& path) {
   if (Store::rendererPtr == nullptr) {
-    return throwError("[SDL2Wrapper] ERROR Cannot create textures without a "
+    return throwError("[sdl2w] ERROR Cannot create textures without a "
                       "renderer (initialized in Window class).");
   }
 
@@ -72,7 +72,7 @@ void Store::createTexture(const std::string& name, const std::string& path) {
     tex = SDL_CreateTextureFromSurface(Store::rendererPtr, loadedImage);
     if (tex == nullptr) {
       Logger().get(WARN)
-          << "[SDL2Wrapper] WARNING Tried to create texture image "
+          << "[sdl2w] WARNING Tried to create texture image "
              "without creating a screen."
           << Logger::endl;
       return;
@@ -82,7 +82,7 @@ void Store::createTexture(const std::string& name, const std::string& path) {
     createSprite(name, textures[name].get());
     SDL_FreeSurface(loadedImage);
   } else {
-    return throwError("[SDL2Wrapper] ERROR Failed to load image '" + path +
+    return throwError("[sdl2w] ERROR Failed to load image '" + path +
                       "' (" + name + ")");
   }
 }
@@ -90,7 +90,7 @@ void Store::createTexture(const std::string& name, const std::string& path) {
 void Store::createFont(const std::string& name, const std::string& path) {
   if (!TTF_WasInit() && TTF_Init() == -1) {
     return throwError(
-        std::string("[SDL2Wrapper] ERROR Failed to initialize TTF: " +
+        std::string("[sdl2w] ERROR Failed to initialize TTF: " +
                     std::string(SDL_GetError())));
   }
 
@@ -102,7 +102,7 @@ void Store::createFont(const std::string& name, const std::string& path) {
         TTF_OpenFont(path.c_str(), size));
 
     if (!fonts[key]) {
-      return throwError("[SDL2Wrapper] ERROR Failed to load font '" + path +
+      return throwError("[sdl2w] ERROR Failed to load font '" + path +
                         "': reason= " + std::string(SDL_GetError()));
     }
 
@@ -118,7 +118,7 @@ void Store::createSprite(const std::string& name, SDL_Texture* tex) {
   if (sprites.find(name) == sprites.end()) {
     sprites[name] = std::make_unique<Sprite>(name, 0, 0, width, height, tex);
   } else {
-    Logger().get(WARN) << "[SDL2Wrapper] WARNING Sprite with name '" << name
+    Logger().get(WARN) << "[sdl2w] WARNING Sprite with name '" << name
                        << "' already exists. '" << name << "'" << Logger::endl;
   }
 }
@@ -134,7 +134,7 @@ void Store::createSprite(const std::string& name,
     SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
     sprites[name] = std::make_unique<Sprite>(name, x, y, w, h, tex);
   } else {
-    Logger().get(WARN) << "[SDL2Wrapper] WARNING Sprite with name '" << name
+    Logger().get(WARN) << "[sdl2w] WARNING Sprite with name '" << name
                        << "' already exists. '" << name << "'" << Logger::endl;
   }
 }
@@ -145,7 +145,7 @@ AnimationDefinition& Store::createAnimationDefinition(const std::string& name,
     anims[name] = std::make_unique<AnimationDefinition>(name, loop);
   } else {
     Logger().get(WARN)
-        << "[SDL2Wrapper] WARNING Cannot create new anim, it already "
+        << "[sdl2w] WARNING Cannot create new anim, it already "
            "exists: '" +
                name + "'"
         << Logger::endl;
@@ -156,7 +156,7 @@ void Store::createSound(const std::string& name, const std::string& path) {
   if (Window::getGlobalWindow().soundForcedDisabled ||
       !Window::soundCanBeLoaded) {
     Logger().get(WARN)
-        << "[SDL2Wrapper] WARNING sound load skipped due to force sound "
+        << "[sdl2w] WARNING sound load skipped due to force sound "
            "disabled "
            "exists: '" +
                name + "'"
@@ -170,11 +170,11 @@ void Store::createSound(const std::string& name, const std::string& path) {
       sounds[innerSoundName] = std::unique_ptr<Mix_Chunk, SDL_Deleter>(
           Mix_LoadWAV(path.c_str()), SDL_Deleter());
       if (!sounds[innerSoundName]) {
-        throw std::string("[SDL2Wrapper] ERROR Failed to load sound '" + path +
+        throw std::string("[sdl2w] ERROR Failed to load sound '" + path +
                           "': reason= " + std::string(Mix_GetError()));
       }
     } else {
-      Logger().get(WARN) << "[SDL2Wrapper] WARNING Sound with name '" << name
+      Logger().get(WARN) << "[sdl2w] WARNING Sound with name '" << name
                          << "' already exists. chunkName='" << innerSoundName
                          << "'" << Logger::endl;
     }
@@ -192,17 +192,17 @@ void Store::createMusic(const std::string& name, const std::string& path) {
     musics[name] = std::unique_ptr<Mix_Music, SDL_Deleter>(
         Mix_LoadMUS(path.c_str()), SDL_Deleter());
     if (!musics[name]) {
-      throw std::string("[SDL2Wrapper] ERROR Failed to load music '" + path +
+      throw std::string("[sdl2w] ERROR Failed to load music '" + path +
                         "': reason= " + std::string(Mix_GetError()));
     }
   } else {
-    Logger().get(WARN) << "[SDL2Wrapper] WARNING Music with name '" << name
+    Logger().get(WARN) << "[sdl2w] WARNING Music with name '" << name
                        << "' already exists. '" << name << "'" << Logger::endl;
   }
 }
 
 void Store::logSprites() {
-  Logger().get(DEBUG) << "[SDL2Wrapper] Sprites:" << Logger::endl;
+  Logger().get(DEBUG) << "[sdl2w] Sprites:" << Logger::endl;
   std::vector<std::string> localSprites;
   localSprites.reserve(sprites.size());
   std::transform(sprites.begin(),
@@ -215,7 +215,7 @@ void Store::logSprites() {
   }
 }
 void Store::logAnimationDefinitions() {
-  Logger().get(DEBUG) << "[SDL2Wrapper] AnimationDefinitions:" << Logger::endl;
+  Logger().get(DEBUG) << "[sdl2w] AnimationDefinitions:" << Logger::endl;
   std::vector<std::string> localAnims;
   localAnims.reserve(anims.size());
   std::transform(anims.begin(),
@@ -229,14 +229,14 @@ void Store::logAnimationDefinitions() {
 }
 
 void Store::logFonts() {
-  Logger().get(DEBUG) << "[SDL2Wrapper] Fonts:" << Logger::endl;
+  Logger().get(DEBUG) << "[sdl2w] Fonts:" << Logger::endl;
   for (auto& it : fonts) {
     Logger().get(DEBUG) << " " << it.first << Logger::endl;
   }
 }
 
 void Store::logSounds() {
-  Logger().get(DEBUG) << "[SDL2Wrapper] Sounds:" << Logger::endl;
+  Logger().get(DEBUG) << "[sdl2w] Sounds:" << Logger::endl;
   for (auto& it : sounds) {
     Logger().get(DEBUG) << " " << it.first << Logger::endl;
   }
@@ -256,7 +256,7 @@ SDL_Texture* Store::getTexture(const std::string& name) {
   if (pair != textures.end()) {
     return pair->second.get();
   } else {
-    throwError(std::string("[SDL2Wrapper] ERROR Cannot get Image '" + name +
+    throwError(std::string("[sdl2w] ERROR Cannot get Image '" + name +
                            "' because it has not been loaded."));
     throw std::runtime_error("fail");
   }
@@ -277,7 +277,7 @@ Sprite& Store::getSprite(const std::string& name) {
     return *pair->second;
   } else {
     logSprites();
-    throwError(std::string("[SDL2Wrapper] ERROR Cannot get Sprite '" + name +
+    throwError(std::string("[sdl2w] ERROR Cannot get Sprite '" + name +
                            "' because it has not been created."));
     throw std::runtime_error("fail");
   }
@@ -294,7 +294,7 @@ AnimationDefinition& Store::getAnimationDefinition(const std::string& name) {
     return *pair->second;
   } else {
     throwError(
-        std::string("[SDL2Wrapper] ERROR Cannot get AnimationDefinition '" +
+        std::string("[sdl2w] ERROR Cannot get AnimationDefinition '" +
                     name + "' because it has not been created."));
     throw std::runtime_error("fail");
   }
@@ -307,7 +307,7 @@ Store::getFont(const std::string& name, const int sz, const bool isOutline) {
   if (pair != fonts.end()) {
     return pair->second.get();
   } else {
-    throwError(std::string("[SDL2Wrapper] ERROR Cannot get Font '" + key +
+    throwError(std::string("[sdl2w] ERROR Cannot get Font '" + key +
                            "' because it has not been created."));
     throw std::runtime_error("fail");
   }
@@ -323,12 +323,12 @@ Mix_Chunk* Store::getSound(const std::string& name) {
       return pair->second.get();
     } else {
       throwError(std::string(
-          "[SDL2Wrapper] ERROR Cannot get Sound '" + name +
+          "[sdl2w] ERROR Cannot get Sound '" + name +
           "' because chunk has not been loaded. ChunkName=" + chunkName));
       throw std::runtime_error("fail");
     }
   } else {
-    throwError(std::string("[SDL2Wrapper] ERROR Cannot get Sound '" + name +
+    throwError(std::string("[sdl2w] ERROR Cannot get Sound '" + name +
                            "' because it has not been loaded."));
     throw std::runtime_error("fail");
   }
@@ -338,7 +338,7 @@ Mix_Music* Store::getMusic(const std::string& name) {
   if (pair != musics.end()) {
     return pair->second.get();
   } else {
-    throwError(std::string("[SDL2Wrapper] ERROR Cannot get Music '" + name +
+    throwError(std::string("[sdl2w] ERROR Cannot get Music '" + name +
                            "' because it has not been loaded."));
     throw std::runtime_error("fail");
   }
@@ -354,4 +354,4 @@ void Store::clear() {
   musics.clear();
 }
 
-} // namespace SDL2Wrapper
+} // namespace sdl2w

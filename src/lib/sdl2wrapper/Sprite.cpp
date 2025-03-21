@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-namespace SDL2Wrapper {
+namespace sdl2w {
 
 Sprite::Sprite(const std::string& nameA,
                const int cxA,
@@ -9,4 +9,4 @@ Sprite::Sprite(const std::string& nameA,
                const int chA,
                SDL_Texture* imageA)
     : name(nameA), cx(cxA), cy(cyA), cw(cwA), ch(chA), image(imageA) {}
-} // namespace SDL2Wrapper
+} // namespace sdl2w

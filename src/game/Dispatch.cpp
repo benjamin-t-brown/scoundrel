@@ -1,7 +1,9 @@
 #include "Dispatch.h"
 #include "game/Dispatch.h"
 #include "game/state.h"
-#include "logger.h"
+
+using sdl2w::Logger;
+using sdl2w::LogType;
 
 namespace scoundrel {
 
@@ -11,7 +13,8 @@ Dispatch& Dispatch::get() { return Dispatch::singleton; }
 
 void Dispatch::init(State* state) {
   if (state == nullptr) {
-    logger::error("Dispatch::init window is nullptr");
+    Logger().get(LogType::ERROR)
+        << "Dispatch::init window is nullptr" << Logger::endl;
     return;
   }
   Dispatch::singleton.state = state;
@@ -29,7 +32,8 @@ void Dispatch::update() {
     actionsCopy.swap(actions);
     for (auto& actionPtr : actionsCopy) {
       auto& action = *actionPtr;
-      // logger::debug(("[ACTION] Invoking action: " + action.getName()).c_str());
+      // logger::debug(("[ACTION] Invoking action: " +
+      // action.getName()).c_str());
       action.execute(state);
     }
   }

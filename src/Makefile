@@ -9,7 +9,6 @@ lib/sdl2wrapper/Animation.cpp\
 lib/sdl2wrapper/AssetLoader.cpp\
 lib/sdl2wrapper/Events.cpp\
 lib/sdl2wrapper/SDL2Includes.cpp\
-lib/sdl2wrapper/Sound.cpp\
 lib/sdl2wrapper/Sprite.cpp\
 lib/sdl2wrapper/Store.cpp\
 lib/sdl2wrapper/Window.cpp\
@@ -85,18 +84,18 @@ EMCC_EXPORTED=\
 ]'\
 -s EXPORTED_RUNTIME_METHODS=['ccall']
 
-# If you get an 'lld error', remove the -fuse-ld=lld flag from the LINK_FLAGS variable
-# NOTE it will likely link much slower on Windows.
-FLAGS=-O0 -g -Wall -std=c++17 -I. 
-LINK_FLAGS=-fuse-ld=lld 
-# LINK_FLAGS=
+FLAGS=-O1 -g -Wall -std=c++17 -I. 
+LINK_FLAGS=
 
 ifeq ($(OS),Windows_NT)
 	LIBS=-mconsole -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+# If you get an 'lld error', remove the -fuse-ld=lld flag from the LINK_FLAGS variable
+# NOTE it will likely link much slower on Windows.
+	LINK_FLAGS=-fuse-ld=lld 
 else
 	UNAME_S=$(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
-    LIBS=-L/opt/homebrew/lib -L/usr/local/lib -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lgtest
+    LIBS=-L/opt/homebrew/lib -L/usr/local/lib -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 		FLAGS+= -I/opt/homebrew/include -I/usr/local/include
 	else
 		LIBS=-lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
@@ -105,7 +104,7 @@ endif
 
 .PHONY: $(EXE) all
 $(EXE): $(CLIENT_OBJECTS) $(SERVER_OBJECTS) $(SHARED_OBJECTS) $(MAIN_ALL_OBJECT)
-	g++ $(FLAGS) $(LINK_FLAGS) $(MAIN_ALL_OBJECT) $(CLIENT_OBJECTS) $(SERVER_OBJECTS) $(SHARED_OBJECTS) -o $(EXE) $(LIBS)
+	$(CXX) $(FLAGS) $(LINK_FLAGS) $(MAIN_ALL_OBJECT) $(CLIENT_OBJECTS) $(SERVER_OBJECTS) $(SHARED_OBJECTS) -o $(EXE) $(LIBS)
 
 all: $(EXE)
 
@@ -145,6 +144,8 @@ clean:
 	rm -f precompiled.h.gch
 	rm -f $(EXE) $(EXE).exe
 	rm -fd .build
+	rm -rf dist
+	rm -rf main.d
 
 clean_nonlib:
 	rm -f $(CLIENT_NONLIB_CODE:.cpp=.o) $(SERVER_NOLIB_CODE:.cpp=.o) $(SHARED_NONLIB_CODE:.cpp=.o) $(MAIN_ALL_OBJECT)
@@ -152,3 +153,5 @@ clean_nonlib:
 	rm -f precompiled.h.gch
 	rm -f $(EXE) $(EXE).exe
 	rm -fd .build
+	rm -rf dist
+	rm -rf main.d
