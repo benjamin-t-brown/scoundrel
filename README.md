@@ -11,6 +11,7 @@ Don't know how to play? Instructions (English) are here: https://benjamin-t-brow
 ## ![image](https://github.com/user-attachments/assets/d33a161a-bbad-4bdf-992d-c63011a776cf)
 
 Keyboard controls: arrow keys=move cursor, x=confirm, z=back
+
 Gamepad controls: dpad=move cursor, a=confirm, b=back
 
 ## Development
