@@ -59,9 +59,9 @@ struct VisualCard {
 
 enum CursorType { CARD, BUTTON };
 struct Cursor {
-  bool visible = true;
   transform::Transform pos;
   CursorType type = CARD;
+  bool visible = true;
 };
 
 struct UiCardCursorInds {
@@ -77,11 +77,11 @@ enum ConfirmType {
 };
 
 struct ConfirmData {
-  ConfirmType type = CONFIRM_HEAL;
-  int confirmCardRoomInd = 0;
   std::string text;
   std::string leftHelpText;
   std::string rightHelpText;
+  ConfirmType type = CONFIRM_HEAL;
+  int confirmCardRoomInd = 0;
   bool leftDisabled = false;
   bool rightDisabled = false;
 };
@@ -89,8 +89,8 @@ struct ConfirmData {
 enum InputMode { NONE, ROOM, CONFIRM, END_GAME_SCREEN, MENU };
 
 struct ActionPreviewData {
-  bool visible = false;
   int nextHp = 0;
+  bool visible = false;
 };
 
 struct AsyncAction {
@@ -99,26 +99,22 @@ struct AsyncAction {
 };
 
 struct UiState {
-  InputMode inputMode = NONE;
-  Cursor cursor;
-  UiCardCursorInds cursorInds;
-  ConfirmData confirmData;
-  bool isFleeSelected = false;
-  bool renderFistAttack = false;
-  int fleeCtr = 0;
-
-  ActionPreviewData actionPreviewData;
-  std::string titleMessage;
-  std::string instructionMessage;
-
   std::vector<std::string> soundsToPlay;
-
-  int menuCardsT = 0;
-
+  ConfirmData confirmData;
+  Cursor cursor;
+  ActionPreviewData actionPreviewData;
+  UiCardCursorInds cursorInds;
   std::pair<int, int> activeWeaponPos = {
       WINDOW_WIDTH / 2 - CARD_WIDTH * CARD_SCALE, WINDOW_HEIGHT / 2};
   std::pair<int, int> noWeaponPos = {WINDOW_WIDTH / 2 + CARD_WIDTH * CARD_SCALE,
                                      WINDOW_HEIGHT / 2};
+  std::string instructionMessage;
+  std::string titleMessage;
+  InputMode inputMode = NONE;
+  int menuCardsT = 0;
+  int fleeCtr = 0;
+  bool isFleeSelected = false;
+  bool renderFistAttack = false;
 };
 
 struct State {

@@ -26,11 +26,25 @@ protected:
       return;
     }
 
-    if (stateRef.room.size() <= 1 && stateRef.stack.size() == 0) {
+    if (stateRef.room.size() <= 0 && stateRef.stack.size() == 0) {
       // victory!
-      libhtml::notifyGameCompleted(true);
+      auto hiscores = hiscore::getHighScores();
+      if (hiscores.size()) {
+        stateRef.wins = hiscores[0].score;
+      }
       stateRef.wins++;
-      hiscore::saveHighScores({{"player", stateRef.wins}});
+      hiscore::saveHighScores({{"wins", stateRef.wins}});
+      libhtml::notifyGameCompleted(true);
+      for (unsigned int i = 0; i < stateRef.room.size(); i++) {
+        transform::moveTo(
+            stateRef.room[i].pos, {WINDOW_WIDTH, WINDOW_HEIGHT}, 100);
+      }
+      for (unsigned int i = 0; i < stateRef.weaponDefeated.size(); i++) {
+        stateRef.weaponDefeated[i].faceDown = true;
+      }
+      for (unsigned int i = 0; i < stateRef.discard.size(); i++) {
+        stateRef.discard[i].faceDown = true;
+      }
       DISPATCH_ACTION(SetInputModeEndGameScreen, true);
       return;
     }

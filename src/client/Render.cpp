@@ -80,7 +80,7 @@ void Render::renderCursor(const Cursor& cursor) {
 void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
   const std::pair<int, int> textPos = {window.renderWidth / 2,
                                        window.renderHeight / 2 -
-                                           CARD_HEIGHT * CARD_SCALE / 2 + 16};
+                                       CARD_HEIGHT * CARD_SCALE / 2 + 8};
 
   window.setCurrentFont("default", 22);
   window.drawTextCentered(
@@ -88,18 +88,18 @@ void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
 
   if (cursorInd == 0) {
     if (!confirmData.leftHelpText.empty()) {
-      window.setCurrentFont("default", 16);
+      window.setCurrentFont("default", 18);
       window.drawTextCentered(confirmData.leftHelpText,
                               textPos.first,
-                              textPos.second + 30,
+                              textPos.second + 22,
                               {200, 200, 200});
     }
   } else if (cursorInd == 1) {
     if (!confirmData.rightHelpText.empty()) {
-      window.setCurrentFont("default", 16);
+      window.setCurrentFont("default", 18);
       window.drawTextCentered(confirmData.rightHelpText,
                               textPos.first,
-                              textPos.second + 30,
+                              textPos.second + 22,
                               {200, 200, 200});
     }
   }
@@ -292,7 +292,7 @@ void Render::renderMenuScreen(const std::string& message,
                               std::to_string(numWins),
                           window.renderWidth / 2,
                           window.renderHeight / 2 + 12,
-                          SDL_Color{200, 200,200});
+                          SDL_Color{200, 200, 200});
 
   int numCardsWide = window.renderWidth / CARD_WIDTH * CARD_SCALE + 1;
 

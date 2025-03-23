@@ -34,6 +34,11 @@ std::vector<HiscoreRow> getHighScores() {
   if (!isLoaded) {
     try {
       const std::string hiscoreText = sdl2w::loadFileAsString(hiscorePath);
+      if (hiscoreText.size() == 0) {
+        saveHighScores(hiscores);
+        isLoaded = true;
+        return hiscores;
+      }
       hiscores = parseHiscoreText(hiscoreText);
     } catch (std::exception& e) {
       // if file does not exist, create it
@@ -47,10 +52,6 @@ std::vector<HiscoreRow> getHighScores() {
 void saveHighScores(const std::vector<HiscoreRow>& hiscoresA) {
   hiscores = hiscoresA;
 
-  // TODO local storage
-#ifdef __EMSCRIPTEN__
-  return;
-#endif
   std::string content = "";
   for (auto& score : hiscoresA) {
     content += serializeHiscoreRow(score) + "\n";

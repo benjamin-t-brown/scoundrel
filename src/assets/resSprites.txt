@@ -1,7 +1,3 @@
-Picture,invisible,invisible.png,0,0
-Picture,invis,assets/invis.png
-SpriteList,invis,1,32,32
-
 Picture,hearts,assets/hearts.png
 SpriteList,cards_hearts,13,32,48
 

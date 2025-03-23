@@ -281,6 +281,20 @@ void Window::createWindow(const std::string& title,
 
   Logger().printf("[SDL] Create renderer\n");
 #ifdef __EMSCRIPTEN__
+  EM_ASM({
+    if (!FS.analyzePath('/sdl2wdata').exists) {
+      FS.mkdir('/sdl2wdata');
+    }
+    FS.mount(IDBFS, {}, '/sdl2wdata');
+    FS.syncfs(
+        true, function(err) {
+          if (err)
+            console.error("Initial FS sync error:", err);
+          else
+            console.log("Initial FS sync complete.");
+        });
+  });
+
   renderer = std::unique_ptr<SDL_Renderer, SDL_Deleter>(
       SDL_CreateRenderer(window.get(),
                          -1,
@@ -289,9 +303,7 @@ void Window::createWindow(const std::string& title,
       SDL_Deleter());
 #elif MIYOOA30
   renderer = std::unique_ptr<SDL_Renderer, SDL_Deleter>(
-      SDL_CreateRenderer(window.get(),
-                         -1,
-                         SDL_RENDERER_ACCELERATED),
+      SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED),
       SDL_Deleter());
   SDL_RenderSetScale(renderer.get(), 1.0, (float)width / (float)height);
   useIntermediateRenderTarget = true;

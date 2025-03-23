@@ -67,11 +67,12 @@ EMCC_LIBS_CLIENT=\
 -s USE_SDL_TTF=2\
 -s ALLOW_MEMORY_GROWTH=1\
 -s SAFE_HEAP=0\
--s DEMANGLE_SUPPORT=1\
 -s ASSERTIONS=1\
 -s INITIAL_MEMORY=326565888\
 -s ENVIRONMENT=web\
--s JS_MATH=0
+-s JS_MATH=0\
+-lidbfs.js\
+-sNO_DISABLE_EXCEPTION_CATCHING
 
 EMCC_EXPORTED=\
 -s EXPORTED_FUNCTIONS='[\
@@ -85,14 +86,18 @@ EMCC_EXPORTED=\
 ]'\
 -s EXPORTED_RUNTIME_METHODS=['ccall']
 
-FLAGS=-O1 -g -Wall -std=c++17 -I. 
+FLAGS=-O1 -Wall -std=c++17 -I.
 LINK_FLAGS=
+
+ifeq ($(DEBUG),true)
+	FLAGS+=-g
+endif
 
 ifeq ($(OS),Windows_NT)
 	LIBS=-mconsole -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 # If you get an 'lld error', remove the -fuse-ld=lld flag from the LINK_FLAGS variable
 # NOTE it will likely link much slower on Windows.
-	LINK_FLAGS=-fuse-ld=lld 
+# LINK_FLAGS=-fuse-ld=lld 
 else
 	UNAME_S=$(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
