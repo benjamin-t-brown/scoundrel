@@ -5,8 +5,15 @@ struct SDL_Renderer;
 struct SDL_Texture;
 struct Mix_Chunk;
 
+// Forward declarations matching SDL's typedef patterns
+// Emscripten SDL uses _TTF_Font and _Mix_Music, while system SDL uses TTF_Font and Mix_Music
+#ifdef __EMSCRIPTEN__
 typedef struct _TTF_Font TTF_Font;
 typedef struct _Mix_Music Mix_Music;
+#else
+typedef struct TTF_Font TTF_Font;
+typedef struct Mix_Music Mix_Music;
+#endif
 typedef struct _SDL_Joystick SDL_Joystick;
 
 namespace sdl2w {
