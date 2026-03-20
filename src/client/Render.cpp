@@ -100,7 +100,7 @@ void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
       window.setCurrentFont("default", 18);
       window.drawTextCentered(confirmData.leftHelpText,
                               textPos.first,
-                              textPos.second + 22,
+                              textPos.second + 18,
                               {200, 200, 200});
     }
   } else if (cursorInd == 1) {
@@ -108,7 +108,7 @@ void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
       window.setCurrentFont("default", 18);
       window.drawTextCentered(confirmData.rightHelpText,
                               textPos.first,
-                              textPos.second + 22,
+                              textPos.second + 18,
                               {200, 200, 200});
     }
   }

@@ -19,28 +19,24 @@ struct CardAnim {
   double nudgeY = 0;
 };
 
-inline void startBump(CardAnim& anim,
-                      double durationMs,
-                      double intensity = 1.0) {
+inline void
+startBump(CardAnim& anim, double durationMs, double intensity = 1.0) {
   anim.type = CardAnim::BUMP;
   anim.t = 0;
   anim.duration = durationMs;
   anim.intensity = intensity;
 }
 
-inline void startShake(CardAnim& anim,
-                       double durationMs,
-                       double intensity = 1.0) {
+inline void
+startShake(CardAnim& anim, double durationMs, double intensity = 1.0) {
   anim.type = CardAnim::SHAKE;
   anim.t = 0;
   anim.duration = durationMs;
   anim.intensity = intensity;
 }
 
-inline void startNudge(CardAnim& anim,
-                       double durationMs,
-                       double targetX,
-                       double targetY) {
+inline void
+startNudge(CardAnim& anim, double durationMs, double targetX, double targetY) {
   anim.type = CardAnim::NUDGE;
   anim.t = 0;
   anim.duration = durationMs;
