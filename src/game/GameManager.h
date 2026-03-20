@@ -18,6 +18,8 @@ public:
   void load();
   void start();
   void handleKeyPress(const std::string& key);
+  void handleMouseClick(int x, int y);
+  void handleMouseMove(int x, int y);
   void update(int dt);
   void render();
 };

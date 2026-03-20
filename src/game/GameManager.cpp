@@ -88,6 +88,178 @@ void GameManager::handleKeyPress(const std::string& key) {
   }
 }
 
+namespace {
+bool hitTestCard(int mx, int my, const VisualCard& card) {
+  const int w = CARD_WIDTH * CARD_SCALE;
+  const int h = CARD_HEIGHT * CARD_SCALE;
+  return mx >= card.pos.x && mx < card.pos.x + w && my >= card.pos.y &&
+         my < card.pos.y + h;
+}
+
+bool hitTestCentered(int mx, int my, int cx, int cy, int halfW, int halfH) {
+  return mx >= cx - halfW && mx < cx + halfW && my >= cy - halfH &&
+         my < cy + halfH;
+}
+} // namespace
+
+void GameManager::handleMouseClick(int x, int y) {
+  if (state.ui.inputMode == InputMode::MENU) {
+    DISPATCH_ACTION(actions::StartGame);
+  } else if (state.ui.inputMode == InputMode::ROOM) {
+    for (size_t i = 0; i < state.room.size(); i++) {
+      if (hitTestCard(x, y, state.room[i])) {
+        state.ui.soundsToPlay.push_back("ui_select");
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverCardInRoom>(static_cast<int>(i)));
+        Dispatch::get().addAction(
+            std::make_unique<actions::SelectRoomCard>(static_cast<int>(i)));
+        return;
+      }
+    }
+    const int btnHalfW = BUTTON_WIDTH * CARD_SCALE / 2;
+    const int btnHalfH = BUTTON_HEIGHT * CARD_SCALE / 2;
+    if (hitTestCentered(
+            x, y, FLEE_UI_POS.first, FLEE_UI_POS.second, btnHalfW, btnHalfH)) {
+      state.ui.soundsToPlay.push_back("ui_select");
+      Dispatch::get().addAction(
+          std::make_unique<actions::HoverFleeButtonInRoom>());
+      Dispatch::get().addAction(
+          std::make_unique<actions::SelectRoomCard>(-1));
+      return;
+    }
+  } else if (state.ui.inputMode == InputMode::CONFIRM) {
+    if (state.ui.confirmData.type == PICK_WEAPON_TO_ATTACK_WITH) {
+      const int cardHalfW = CARD_WIDTH * CARD_SCALE / 2;
+      const int cardHalfH = CARD_HEIGHT * CARD_SCALE / 2;
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_CARD_LEFT_POS.first,
+                          CONFIRM_CARD_LEFT_POS.second,
+                          cardHalfW,
+                          cardHalfH)) {
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverConfirmButton>(0));
+        Dispatch::get().addAction(
+            std::make_unique<actions::SelectConfirm>(0));
+        return;
+      }
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_CARD_RIGHT_POS.first,
+                          CONFIRM_CARD_RIGHT_POS.second,
+                          cardHalfW,
+                          cardHalfH)) {
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverConfirmButton>(1));
+        Dispatch::get().addAction(
+            std::make_unique<actions::SelectConfirm>(1));
+        return;
+      }
+    } else {
+      const int btnHalfW = BUTTON_WIDTH * CARD_SCALE / 2;
+      const int btnHalfH = BUTTON_HEIGHT * CARD_SCALE / 2;
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_LEFT_POS.first,
+                          CONFIRM_LEFT_POS.second,
+                          btnHalfW,
+                          btnHalfH)) {
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverConfirmButton>(0));
+        Dispatch::get().addAction(
+            std::make_unique<actions::SelectConfirm>(0));
+        return;
+      }
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_RIGHT_POS.first,
+                          CONFIRM_RIGHT_POS.second,
+                          btnHalfW,
+                          btnHalfH)) {
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverConfirmButton>(1));
+        Dispatch::get().addAction(
+            std::make_unique<actions::SelectConfirm>(1));
+        return;
+      }
+    }
+  } else if (state.ui.inputMode == InputMode::END_GAME_SCREEN) {
+    state.ui.soundsToPlay.push_back("ui_select");
+    DISPATCH_ACTION(actions::SetInputModeMenu);
+  }
+}
+
+void GameManager::handleMouseMove(int x, int y) {
+  if (state.ui.inputMode == InputMode::ROOM) {
+    for (size_t i = 0; i < state.room.size(); i++) {
+      if (hitTestCard(x, y, state.room[i])) {
+        int ind = static_cast<int>(i);
+        if (state.ui.cursorInds.room != ind || state.ui.isFleeSelected) {
+          state.ui.soundsToPlay.push_back("ui_hover");
+          Dispatch::get().addAction(
+              std::make_unique<actions::HoverCardInRoom>(ind));
+        }
+        return;
+      }
+    }
+    const int btnHalfW = BUTTON_WIDTH * CARD_SCALE / 2;
+    const int btnHalfH = BUTTON_HEIGHT * CARD_SCALE / 2;
+    if (hitTestCentered(
+            x, y, FLEE_UI_POS.first, FLEE_UI_POS.second, btnHalfW, btnHalfH)) {
+      if (!state.ui.isFleeSelected) {
+        state.ui.soundsToPlay.push_back("ui_hover");
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverFleeButtonInRoom>());
+      }
+      return;
+    }
+  } else if (state.ui.inputMode == InputMode::CONFIRM) {
+    int hitInd = -1;
+    if (state.ui.confirmData.type == PICK_WEAPON_TO_ATTACK_WITH) {
+      const int cardHalfW = CARD_WIDTH * CARD_SCALE / 2;
+      const int cardHalfH = CARD_HEIGHT * CARD_SCALE / 2;
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_CARD_LEFT_POS.first,
+                          CONFIRM_CARD_LEFT_POS.second,
+                          cardHalfW,
+                          cardHalfH)) {
+        hitInd = 0;
+      } else if (hitTestCentered(x,
+                                 y,
+                                 CONFIRM_CARD_RIGHT_POS.first,
+                                 CONFIRM_CARD_RIGHT_POS.second,
+                                 cardHalfW,
+                                 cardHalfH)) {
+        hitInd = 1;
+      }
+    } else {
+      const int btnHalfW = BUTTON_WIDTH * CARD_SCALE / 2;
+      const int btnHalfH = BUTTON_HEIGHT * CARD_SCALE / 2;
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_LEFT_POS.first,
+                          CONFIRM_LEFT_POS.second,
+                          btnHalfW,
+                          btnHalfH)) {
+        hitInd = 0;
+      } else if (hitTestCentered(x,
+                                 y,
+                                 CONFIRM_RIGHT_POS.first,
+                                 CONFIRM_RIGHT_POS.second,
+                                 btnHalfW,
+                                 btnHalfH)) {
+        hitInd = 1;
+      }
+    }
+    if (hitInd >= 0 && state.ui.cursorInds.confirm != hitInd) {
+      state.ui.soundsToPlay.push_back("ui_hover");
+      Dispatch::get().addAction(
+          std::make_unique<actions::HoverConfirmButton>(hitInd));
+    }
+  }
+}
+
 void GameManager::update(int dt) {
   std::vector<VisualCard*> allCards;
   for (auto& vCard : state.discard) {

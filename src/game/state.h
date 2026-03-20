@@ -16,6 +16,8 @@ class AbstractAction;
 constexpr const int CARD_WIDTH = 32;
 constexpr const int CARD_HEIGHT = 48;
 constexpr const int CARD_SCALE = 3;
+constexpr const int BUTTON_WIDTH = 64;
+constexpr const int BUTTON_HEIGHT = 12;
 constexpr const int WINDOW_WIDTH = 640;
 constexpr const int WINDOW_HEIGHT = 480;
 

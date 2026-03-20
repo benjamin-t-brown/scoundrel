@@ -84,6 +84,13 @@ int main(int argc, char* argv[]) {
     auto& events = window.getEvents();
     events.setKeyboardEvent(
         "keypress", [&](const std::string& key) { game.handleKeyPress(key); });
+    events.setMouseEvent("mousedown", [&](int x, int y, int button) {
+      if (button == sdl2w::Events::MOUSE_BUTTON_LEFT) {
+        game.handleMouseClick(x, y);
+      }
+    });
+    events.setMouseEvent(
+        "mousemove", [&](int x, int y, int) { game.handleMouseMove(x, y); });
 
     Logger().get(LogType::INFO) << "Start loop" << Logger::endl;
     game.start();

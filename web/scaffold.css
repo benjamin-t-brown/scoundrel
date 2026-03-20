@@ -13,7 +13,11 @@
 .scaffold-board {
   width: calc(100% - 400px);
   margin-top: unset !important;
-  pointer-events: none;
+}
+
+.scaffold-board canvas {
+  pointer-events: auto;
+  touch-action: none;
 }
 
 .scaffold-controls {
