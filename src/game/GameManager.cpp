@@ -11,6 +11,7 @@
 #include "game/actions/ui/SetInputModeMenu.hpp"
 #include "game/state.h"
 #include "game/utils/timer.hpp"
+#include "game/utils/cardanim.hpp"
 #include "game/utils/transform.hpp"
 #include "lib/sdl2wrapper/AssetLoader.h"
 #include "lib/sdl2wrapper/Window.h"
@@ -42,12 +43,26 @@ void GameManager::handleKeyPress(const std::string& key) {
   if (state.ui.inputMode == InputMode::CONFIRM) {
     if (isLeftKey(key)) {
       state.ui.soundsToPlay.push_back("ui_hover");
-      Dispatch::get().addAction(std::make_unique<actions::HoverConfirmButton>(
-          state.ui.cursorInds.confirm - 1));
+      int nextInd = state.ui.cursorInds.confirm == 2
+                        ? 2
+                        : state.ui.cursorInds.confirm - 1;
+      Dispatch::get().addAction(
+          std::make_unique<actions::HoverConfirmButton>(nextInd));
     } else if (isRightKey(key)) {
       state.ui.soundsToPlay.push_back("ui_hover");
-      Dispatch::get().addAction(std::make_unique<actions::HoverConfirmButton>(
-          state.ui.cursorInds.confirm + 1));
+      int nextInd = state.ui.cursorInds.confirm == 2
+                        ? 2
+                        : state.ui.cursorInds.confirm + 1;
+      Dispatch::get().addAction(
+          std::make_unique<actions::HoverConfirmButton>(nextInd));
+    } else if ((isDownKey(key) || isUpKey(key)) &&
+               state.ui.confirmData.type == PICK_WEAPON_TO_ATTACK_WITH) {
+      state.ui.soundsToPlay.push_back("ui_hover");
+      int nextInd = state.ui.cursorInds.confirm == 2
+                        ? 0
+                        : 2;
+      Dispatch::get().addAction(
+          std::make_unique<actions::HoverConfirmButton>(nextInd));
     } else if (isConfirmKey(key)) {
       Dispatch::get().addAction(std::make_unique<actions::SelectConfirm>(
           state.ui.cursorInds.confirm));
@@ -155,6 +170,20 @@ void GameManager::handleMouseClick(int x, int y) {
             std::make_unique<actions::SelectConfirm>(1));
         return;
       }
+      const int btnHalfW2 = BUTTON_WIDTH * CARD_SCALE / 2;
+      const int btnHalfH2 = BUTTON_HEIGHT * CARD_SCALE / 2;
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_BACK_POS.first,
+                          CONFIRM_BACK_POS.second,
+                          btnHalfW2,
+                          btnHalfH2)) {
+        Dispatch::get().addAction(
+            std::make_unique<actions::HoverConfirmButton>(2));
+        Dispatch::get().addAction(
+            std::make_unique<actions::SelectConfirm>(2));
+        return;
+      }
     } else {
       const int btnHalfW = BUTTON_WIDTH * CARD_SCALE / 2;
       const int btnHalfH = BUTTON_HEIGHT * CARD_SCALE / 2;
@@ -225,13 +254,23 @@ void GameManager::handleMouseMove(int x, int y) {
                           cardHalfW,
                           cardHalfH)) {
         hitInd = 0;
-      } else if (hitTestCentered(x,
+      } else       if (hitTestCentered(x,
                                  y,
                                  CONFIRM_CARD_RIGHT_POS.first,
                                  CONFIRM_CARD_RIGHT_POS.second,
                                  cardHalfW,
                                  cardHalfH)) {
         hitInd = 1;
+      }
+      const int btnHalfW2 = BUTTON_WIDTH * CARD_SCALE / 2;
+      const int btnHalfH2 = BUTTON_HEIGHT * CARD_SCALE / 2;
+      if (hitTestCentered(x,
+                          y,
+                          CONFIRM_BACK_POS.first,
+                          CONFIRM_BACK_POS.second,
+                          btnHalfW2,
+                          btnHalfH2)) {
+        hitInd = 2;
       }
     } else {
       const int btnHalfW = BUTTON_WIDTH * CARD_SCALE / 2;
@@ -276,12 +315,16 @@ void GameManager::update(int dt) {
   }
   for (auto vCard : allCards) {
     transform::update(vCard->pos, dt);
+    cardanim::updateCardAnim(vCard->anim, dt);
   }
   if (state.currentWeapon.has_value()) {
     transform::update(state.currentWeapon.value().pos, dt);
+    cardanim::updateCardAnim(state.currentWeapon.value().anim, dt);
   }
 
   transform::update(state.ui.cursor.pos, dt);
+  cardanim::updateCardAnim(state.ui.fistAnim, dt);
+  cardanim::updateCardAnim(state.ui.heartAnim, dt);
 
   if (!state.asyncActions.empty()) {
     AsyncAction& delayedAction = state.asyncActions.front();
@@ -323,8 +366,10 @@ void GameManager::render() {
     r.renderFleeUi(state.room.size() < 4 || state.ui.fleeCtr > 0);
   }
 
-  r.renderHealthUi(
-      state.playerHealth, state.playerHealthMax, state.ui.actionPreviewData);
+  r.renderHealthUi(state.playerHealth,
+                    state.playerHealthMax,
+                    state.ui.actionPreviewData,
+                    state.ui.heartAnim);
   r.renderDeckNumber(static_cast<int>(state.stack.size()));
 
   std::vector<VisualCard*> allCards;
@@ -348,9 +393,11 @@ void GameManager::render() {
     r.renderWeaponCard(state.currentWeapon.value(), state.weaponDefeated);
   }
   if (state.ui.renderFistAttack) {
+    double fistOffsetX = cardanim::getAnimOffsetX(state.ui.fistAnim);
+    double fistOffsetY = cardanim::getAnimOffsetY(state.ui.fistAnim);
     window.drawSprite("card_fist_0",
-                      WEAPON_UI_POS.first,
-                      WEAPON_UI_POS.second,
+                      WEAPON_UI_POS.first + fistOffsetX,
+                      WEAPON_UI_POS.second + fistOffsetY,
                       true,
                       0,
                       {CARD_SCALE, CARD_SCALE});

@@ -3,6 +3,7 @@
 #include "game/Dispatch.h"
 #include "game/state.h"
 #include "game/actions/AbstractAction.h"
+#include "game/actions/depictions/AnimateCard.hpp"
 #include "game/actions/depictions/EndRound.hpp"
 #include "game/actions/depictions/ModifyPlayerHp.hpp"
 #include "game/actions/ui/SetInputModeNone.hpp"
@@ -33,6 +34,14 @@ protected:
     stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{100.}});
 
     stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{400.}});
+
+    stateRef.asyncActions.push_back(
+        AsyncAction{std::make_unique<AnimateCard>(LOC_DISCARD_BACK,
+                                                  0,
+                                                  cardanim::CardAnim::BUMP,
+                                                  250,
+                                                  1.0),
+                    timer::Timer{1}});
 
     int currentPlayerHp = stateRef.playerHealth;
     int hpDiff = nextHp - currentPlayerHp;

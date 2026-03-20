@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/utils/cardanim.hpp"
 #include "game/utils/timer.hpp"
 #include "game/utils/transform.hpp"
 #include <memory>
@@ -43,6 +44,9 @@ constexpr const std::pair<int, int> CARD_DISCARD_POS = {
 constexpr const std::pair<int, int> CARD_WEAPON_DEFEATED_POS = {
     WINDOW_WIDTH / 2 + CARD_WIDTH * CARD_SCALE / 2 + 10,
     WEAPON_CARD_POS.second};
+constexpr const std::pair<int, int> CONFIRM_BACK_POS = {
+    WINDOW_WIDTH / 2,
+    WINDOW_HEIGHT / 2 - CARD_HEIGHT * CARD_SCALE / 2 + 8 + 44};
 constexpr const std::pair<int, int> FLEE_UI_POS = {WINDOW_WIDTH / 2, 190};
 constexpr const std::pair<int, int> CARD_STACK_POS = {4, 4};
 
@@ -57,6 +61,7 @@ struct VisualCard {
   Card card;
   transform::Transform pos;
   bool faceDown = false;
+  cardanim::CardAnim anim;
 };
 
 enum CursorType { CARD, BUTTON };
@@ -117,6 +122,8 @@ struct UiState {
   int fleeCtr = 0;
   bool isFleeSelected = false;
   bool renderFistAttack = false;
+  cardanim::CardAnim fistAnim;
+  cardanim::CardAnim heartAnim;
 };
 
 struct State {

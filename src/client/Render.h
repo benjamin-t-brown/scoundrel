@@ -27,8 +27,10 @@ public:
   void renderWeaponUi(std::optional<VisualCard>& weapon);
   void renderFleeUi(bool isDisabled);
   void renderDeckNumber(int numCards);
-  void
-  renderHealthUi(int hp, int maxHp, const ActionPreviewData& actionPreviewData);
+  void renderHealthUi(int hp,
+                      int maxHp,
+                      const ActionPreviewData& actionPreviewData,
+                      const cardanim::CardAnim& heartAnim);
   void renderEndGameScreen(const std::string& message,
                            const std::string& instructionMessage);
   void renderMenuScreen(const std::string& message,

@@ -5,6 +5,7 @@
 #include "game/actions/AbstractAction.h"
 #include "game/actions/depictions/EndRound.hpp"
 #include "game/actions/depictions/ModifyPlayerHp.hpp"
+#include "game/actions/depictions/AnimateCard.hpp"
 #include "game/actions/depictions/PlaySound.hpp"
 #include "game/actions/ui/SetInputModeNone.hpp"
 #include "game/calculations.hpp"
@@ -69,7 +70,7 @@ protected:
     }
     stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{100.}});
 
-    stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{400.}});
+    stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{150.}});
     int wormSoundInd = 1;
     if (monsterCard.card.value > 10) {
       wormSoundInd = 3;
@@ -80,11 +81,48 @@ protected:
         std::make_unique<PlaySound>("worm" + std::to_string(wormSoundInd)),
         timer::Timer{1}});
 
+    CardLocation monsterLoc =
+        usedWeapon ? LOC_WEAPON_DEFEATED : LOC_DISCARD_BACK;
+    int monsterLocInd = usedWeapon ? indWeaponInserted : 0;
+
     if (didNoDamage) {
+      stateRef.asyncActions.push_back(
+          AsyncAction{std::make_unique<AnimateCard>(monsterLoc,
+                                                    monsterLocInd,
+                                                    cardanim::CardAnim::BUMP,
+                                                    200,
+                                                    0.6),
+                      timer::Timer{1}});
       stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{600.}});
       stateRef.asyncActions.push_back(AsyncAction{
           std::make_unique<PlaySound>("no_damage"), timer::Timer{400}});
     } else {
+      if (usedWeapon) {
+        stateRef.asyncActions.push_back(
+            AsyncAction{std::make_unique<AnimateCard>(LOC_WEAPON,
+                                                      0,
+                                                      cardanim::CardAnim::NUDGE,
+                                                      200,
+                                                      0.0,
+                                                      -40.0),
+                        timer::Timer{200}});
+      } else {
+        stateRef.asyncActions.push_back(
+            AsyncAction{std::make_unique<AnimateCard>(LOC_FIST,
+                                                      0,
+                                                      cardanim::CardAnim::NUDGE,
+                                                      200,
+                                                      0.0,
+                                                      -40.0),
+                        timer::Timer{200}});
+      }
+      stateRef.asyncActions.push_back(
+          AsyncAction{std::make_unique<AnimateCard>(monsterLoc,
+                                                    monsterLocInd,
+                                                    cardanim::CardAnim::SHAKE,
+                                                    300,
+                                                    1.0),
+                      timer::Timer{1}});
       stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{600.}});
     }
 

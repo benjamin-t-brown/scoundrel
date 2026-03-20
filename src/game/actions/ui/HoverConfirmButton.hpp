@@ -14,35 +14,52 @@ protected:
 
   void act() override {
     State& stateRef = *state;
+    int maxInd =
+        stateRef.ui.confirmData.type == ConfirmType::PICK_WEAPON_TO_ATTACK_WITH
+            ? 2
+            : 1;
     stateRef.ui.cursorInds.confirm = ind;
     if (ind < 0) {
       stateRef.ui.cursorInds.confirm = 0;
-    } else if (ind > 1) {
-      stateRef.ui.cursorInds.confirm = 1;
+    } else if (ind > maxInd) {
+      stateRef.ui.cursorInds.confirm = maxInd;
     }
 
-    std::pair<int, int> indPos =
-        stateRef.ui.confirmData.type == ConfirmType::PICK_WEAPON_TO_ATTACK_WITH
-            ? stateRef.ui.cursorInds.confirm == 0
-                  ? std::make_pair(CONFIRM_CARD_LEFT_POS.first -
-                                       CARD_WIDTH * CARD_SCALE / 2,
-                                   CONFIRM_CARD_LEFT_POS.second -
-                                       CARD_HEIGHT * CARD_SCALE / 2)
-                  : std::make_pair(CONFIRM_CARD_RIGHT_POS.first -
-                                       CARD_WIDTH * CARD_SCALE / 2,
-                                   CONFIRM_CARD_RIGHT_POS.second -
-                                       CARD_HEIGHT * CARD_SCALE / 2)
-        : stateRef.ui.cursorInds.confirm == 0 ? CONFIRM_LEFT_POS
-                                              : CONFIRM_RIGHT_POS;
+    std::pair<int, int> indPos;
+    if (stateRef.ui.confirmData.type ==
+        ConfirmType::PICK_WEAPON_TO_ATTACK_WITH) {
+      stateRef.ui.cursor.type =
+          stateRef.ui.cursorInds.confirm == 2 ? BUTTON : CARD;
+      if (stateRef.ui.cursorInds.confirm == 0) {
+        indPos = std::make_pair(CONFIRM_CARD_LEFT_POS.first -
+                                    CARD_WIDTH * CARD_SCALE / 2,
+                                CONFIRM_CARD_LEFT_POS.second -
+                                    CARD_HEIGHT * CARD_SCALE / 2);
+      } else if (stateRef.ui.cursorInds.confirm == 1) {
+        indPos = std::make_pair(CONFIRM_CARD_RIGHT_POS.first -
+                                    CARD_WIDTH * CARD_SCALE / 2,
+                                CONFIRM_CARD_RIGHT_POS.second -
+                                    CARD_HEIGHT * CARD_SCALE / 2);
+      } else {
+        indPos = CONFIRM_BACK_POS;
+      }
+    } else {
+      indPos = stateRef.ui.cursorInds.confirm == 0 ? CONFIRM_LEFT_POS
+                                                    : CONFIRM_RIGHT_POS;
+    }
 
     if (stateRef.ui.confirmData.type ==
         ConfirmType::PICK_WEAPON_TO_ATTACK_WITH) {
-      stateRef.ui.actionPreviewData.visible = true;
-      stateRef.ui.actionPreviewData.nextHp = calcNextHealthAfterAttack(
-          stateRef.playerHealth,
-          stateRef.room[stateRef.ui.confirmData.confirmCardRoomInd],
-          stateRef.ui.cursorInds.confirm == 0 ? stateRef.currentWeapon
-                                              : std::nullopt);
+      if (stateRef.ui.cursorInds.confirm <= 1) {
+        stateRef.ui.actionPreviewData.visible = true;
+        stateRef.ui.actionPreviewData.nextHp = calcNextHealthAfterAttack(
+            stateRef.playerHealth,
+            stateRef.room[stateRef.ui.confirmData.confirmCardRoomInd],
+            stateRef.ui.cursorInds.confirm == 0 ? stateRef.currentWeapon
+                                                : std::nullopt);
+      } else {
+        stateRef.ui.actionPreviewData.visible = false;
+      }
     } else if (stateRef.ui.confirmData.type == ConfirmType::CONFIRM_HEAL) {
       stateRef.ui.actionPreviewData.visible = true;
       stateRef.ui.actionPreviewData.nextHp = calcNextHealthAfterHealCard(

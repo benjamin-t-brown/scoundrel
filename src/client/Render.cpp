@@ -1,6 +1,7 @@
 #include "Render.h"
 #include "game/calculations.hpp"
 #include "game/state.h"
+#include "game/utils/cardanim.hpp"
 #include "game/utils/transform.hpp"
 #include "lib/sdl2wrapper/Localization.h"
 #include "lib/sdl2wrapper/SDL2Includes.h"
@@ -38,17 +39,25 @@ void Render::renderCard(const VisualCard& vCard) {
        << cardValueToSpriteIndex(vCard.card.value);
   }
 
+  double scale = cardScale * cardanim::getAnimScale(vCard.anim);
+  double rotation = cardanim::getAnimRotation(vCard.anim);
+  double offsetX = cardanim::getAnimOffsetX(vCard.anim);
+  double offsetY = cardanim::getAnimOffsetY(vCard.anim);
   window.drawSprite(ss.str(),
-                    vCard.pos.x + CARD_WIDTH * cardScale / 2,
-                    vCard.pos.y + CARD_HEIGHT * cardScale / 2,
+                    vCard.pos.x + CARD_WIDTH * cardScale / 2 + offsetX,
+                    vCard.pos.y + CARD_HEIGHT * cardScale / 2 + offsetY,
                     true,
-                    0,
-                    {cardScale, cardScale});
+                    rotation,
+                    {scale, scale});
 }
 
 void Render::renderWeaponCard(const VisualCard& vCard,
                               std::vector<VisualCard>& weaponDefeated) {
   renderCard(vCard);
+
+  if (vCard.anim.type != cardanim::CardAnim::NONE || vCard.pos.isMoving) {
+    return;
+  }
 
   int effectiveValue =
       std::max(0, calcWeaponAttackableValue(vCard, weaponDefeated));
@@ -134,6 +143,18 @@ void Render::renderConfirm(const ConfirmData& confirmData, int cursorInd) {
                       true,
                       0,
                       {CARD_SCALE, CARD_SCALE});
+
+    window.setCurrentFont("default", 22);
+    window.drawSprite("ui_button_0",
+                      CONFIRM_BACK_POS.first,
+                      CONFIRM_BACK_POS.second,
+                      true,
+                      0,
+                      {CARD_SCALE, CARD_SCALE});
+    window.drawTextCentered(sdl2w::L10n::trans(LOCSTR("Back")),
+                            CONFIRM_BACK_POS.first,
+                            CONFIRM_BACK_POS.second,
+                            {255, 255, 255});
   } else {
     window.setCurrentFont("default", 22);
     window.drawSprite("ui_button_0",
@@ -209,13 +230,15 @@ void Render::renderDeckNumber(int numCards) {
 
 void Render::renderHealthUi(int hp,
                             int maxHp,
-                            const ActionPreviewData& actionPreviewData) {
+                            const ActionPreviewData& actionPreviewData,
+                            const cardanim::CardAnim& heartAnim) {
+  double heartScale = CARD_SCALE * cardanim::getAnimScale(heartAnim);
   window.drawSprite("ui_heart_0",
-                    10,
-                    window.renderHeight - 12 * CARD_SCALE - 13,
-                    false,
+                    10 + 12 * CARD_SCALE / 2,
+                    window.renderHeight - 12 * CARD_SCALE / 2 - 13,
+                    true,
                     0,
-                    {CARD_SCALE, CARD_SCALE});
+                    {heartScale, heartScale});
   window.setCurrentFont("default", 36);
   window.drawTextCentered(std::to_string(hp),
                           75,

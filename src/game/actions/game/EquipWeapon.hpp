@@ -2,6 +2,7 @@
 #include "game/Dispatch.h"
 #include "game/state.h"
 #include "game/actions/AbstractAction.h"
+#include "game/actions/depictions/AnimateCard.hpp"
 #include "game/actions/depictions/EndRound.hpp"
 #include "game/actions/ui/SetInputModeNone.hpp"
 #include "game/utils/transform.hpp"
@@ -38,7 +39,15 @@ protected:
     transform::moveTo(vCard.pos, CARD_CENTER_SCREEN_POS, 100);
     stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{100.}});
 
-    stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{400.}});
+    stateRef.asyncActions.push_back(AsyncAction{nullptr, timer::Timer{150.}});
+
+    stateRef.asyncActions.push_back(
+        AsyncAction{std::make_unique<AnimateCard>(LOC_WEAPON,
+                                                  0,
+                                                  cardanim::CardAnim::BUMP,
+                                                  250,
+                                                  1.0),
+                    timer::Timer{1}});
 
     stateRef.asyncActions.push_back(
         AsyncAction{std::make_unique<EndRound>(), timer::Timer{1.}});

@@ -52,8 +52,9 @@ protected:
       Dispatch::get().addAction(std::make_unique<EquipWeapon>(roomInd));
       break;
     case PICK_WEAPON_TO_ATTACK_WITH:
-      // fist
-      if (selectInd == 1) {
+      if (selectInd == 2) {
+        Dispatch::get().addAction(std::make_unique<SetInputModeRoom>());
+      } else if (selectInd == 1) {
         Dispatch::get().addAction(
             std::make_unique<AttackMonster>(roomInd, false));
       } else {
