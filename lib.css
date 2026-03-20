@@ -66,6 +66,7 @@ canvas {
   justify-content: left;
   padding: 4px;
   pointer-events: all;
+  z-index: 99;
 }
 
 .on-screen-controls {
