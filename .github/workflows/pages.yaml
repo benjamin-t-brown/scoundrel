@@ -5,7 +5,7 @@ on:
       - main
 
 env:
-  EM_VERSION: 2.0.10
+  EM_VERSION: 4.0.8
   EM_CACHE_FOLDER: 'emsdk-cache'
 
 jobs:
